@@ -43,7 +43,7 @@
                                 本月客服销售额排行榜
                             </p>
                             <div class="to-do-list-con map-con">
-                                <div v-for="(item, index) in toDoList" :key="index" class="to-do-item">
+                                <div v-for="(item, index) in toDoList2" :key="index" class="to-do-item">
                                     <to-do-list-item :content="item.title"></to-do-list-item>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                         </p>
                         <div class="map-con">
                             <Col span="14">
-                                <map-data-table :cityData="cityData" height="281" :style-obj="{margin: '12px 0 0 11px'}"></map-data-table>
+                                <map-data-table :cityData="channelData" height="281" :style-obj="{margin: '12px 0 0 11px'}"></map-data-table>
                             </Col>
                             <Col span="10" class="margin-top-10">
                                 <div class="data-source-row">
@@ -145,6 +145,7 @@
 
 <script>
 import cityData from './map-data/get-city-value.js';
+import channelData from './map-data/get-channel-value.js';
 import homeMap from './components/map.vue';
 import dataSourcePie from './components/dataSourcePie.vue';
 import areaPie from './components/areaPie.vue';
@@ -175,19 +176,36 @@ export default {
         return {
             toDoList: [
                 {
-                    title: '新款Polo 衫'
+                    title: '20180119203359106'
                 },
                 {
-                    title: '春季新款T恤'
+                    title: '20180119203359107'
                 },
                 {
-                    title: '秋款卫衣'
+                    title: '20180119203359108'
                 },
                 {
-                    title: '冬款羽绒服'
+                    title: '20180119203359111'
                 },
                 {
-                    title: '定制T恤'
+                    title: '20180119203359123'
+                }
+            ],
+            toDoList2: [
+                {
+                    title: '宋江'
+                },
+                {
+                    title: '武松'
+                },
+                {
+                    title: '李逵'
+                },
+                {
+                    title: '镇关西'
+                },
+                {
+                    title: '燕青'
                 }
             ],
             count: {
@@ -197,6 +215,7 @@ export default {
                 transfer: 195
             },
             cityData: cityData,
+            channelData: channelData,
             showAddNewTodo: false,
             newToDoItemValue: '',
             userName: this.$store.state.user.userName,

@@ -76,16 +76,16 @@ export const appRouter = [
         component: Main,
         children: [
             {
-                path: 'payment',
+                path: 'finance-payment',
                 icon: 'document',
-                name: 'payment',
+                name: 'finance-payment',
                 title: '应付单',
                 component: resolve => { require(['@/views/finance/payment.vue'], resolve); }
             },
             {
-                path: 'income',
+                path: 'finance-income',
                 icon: 'document',
-                name: 'income',
+                name: 'finance-income',
                 title: '应收单',
                 component: resolve => { require(['@/views/finance/income.vue'], resolve); }
             },
@@ -153,7 +153,7 @@ export const appRouter = [
         children: [
             {
                 path: 'purchase-order',
-                icon: 'document',
+                icon: 'ios-cart',
                 name: 'purchase-order',
                 title: '进货入库单',
                 component: resolve => { require(['@/views/stock/purchase-order.vue'], resolve); }
@@ -206,7 +206,7 @@ export const appRouter = [
         children: [
             { path: 'channel-sale-report', title: '渠道销售报表', name: 'channel-sale-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/channel-sale-report.vue'], resolve); } },
             { path: 'sale-report', title: '经营日月报表', name: 'sale-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/sale-report.vue'], resolve); } },
-            { path: 'staff-report', title: '客服业绩报表', name: 'staff-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/sale-report.vue'], resolve); } },
+            { path: 'staff-report', title: '客服业绩报表', name: 'staff-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/staff-report.vue'], resolve); } },
             { path: 'order-report', title: '订单统计报表', name: 'order-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/order-report.vue'], resolve); } },
             { path: 'product-report', title: '商品销售报表', name: 'product-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/product-report.vue'], resolve); } },
             { path: 'color-size-report', title: '商品颜色尺码对比', name: 'color-size-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/color-size-report.vue'], resolve); } },
