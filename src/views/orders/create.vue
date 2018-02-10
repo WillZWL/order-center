@@ -1,6 +1,9 @@
 <style lang="less">
     @import '../../styles/common.less';
     @import './order.less';
+    .area .ivu-row .ivu-col {
+        width: 30%;
+    }
 </style>
 <template>
     <div>
@@ -36,12 +39,6 @@
                                             </FormItem>
                                             <FormItem label="订单备注">
                                                 <Input v-model="addOrderForm.remark" type="textarea" :rows="4" placeholder="订单备注"></Input>
-                                            </FormItem>
-                                            <FormItem label="是否印刷">
-                                                <i-switch v-model="addOrderForm.isPrint">
-                                                    <span slot="open">是</span>
-                                                    <span slot="close">否</span>
-                                                </i-switch>
                                             </FormItem>
                                         </Col>
                                         <Col span="8" class="padding-left-10">
@@ -88,6 +85,20 @@
                                                     <Button type="ghost" icon="ios-cloud-upload-outline">上传付款凭证</Button>
                                                 </Upload>
                                             </FormItem>
+                                            <FormItem label="是否印刷">
+                                                <i-switch v-model="addOrderForm.isPrint">
+                                                    <span slot="open">是</span>
+                                                    <span slot="close">否</span>
+                                                </i-switch>
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="10">
+                                            <FormItem label="地址">                                            
+                                                <al-selector v-model="addOrderForm.area" data-type="name" level="2" class="area" />
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="14">
+                                            <Input v-model="addOrderForm.address" placeholder="请输入详细地址"></Input>                                            
                                         </Col>
                                     </Row>
                                 </Card>
@@ -270,9 +281,13 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import iviewArea from 'iview-area';
+Vue.use(iviewArea);
 import DragableTable from './../common/components/dragableTable.vue';
 import canEditTable from './../common/components/canEditTable.vue';
 import Cookies from 'js-cookie';
+import moment from 'moment';
 export default {
     name: 'create-order',
     components: {
@@ -293,7 +308,7 @@ export default {
             },
             addOrderForm: {
                 isPrint: 0,
-                order_date: '',
+                order_date: moment(),
                 channel_id: '',
                 client_id: '',
                 invoice_type: '',
@@ -307,6 +322,8 @@ export default {
                 invoiceImgs: [],
                 account_id: '',
                 pay_amount: 0,
+                area: [],
+                address: '',     
             },
             orderValid: {
                 order_date: [

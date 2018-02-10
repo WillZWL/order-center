@@ -57,12 +57,48 @@ export const otherRouter = {
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: '首页', name: 'home_index', component: resolve => { require(['@/views/home/home.vue'], resolve); } },
-        { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } },
-        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['@/views/message/message.vue'], resolve); } },
-        { path: 'attribute-value', title: '商品属性', name: 'attribute_value', component: resolve => { require(['@/views/products/attribute-value.vue'], resolve); } },
-        { path: 'account-category', title: '分类管理', name: 'account_category', component: resolve => { require(['@/views/system/account-category.vue'], resolve); } },
-        { path: 'order/:order_id', title: '订单详情', name: 'order-info', component: resolve => { require(['@/views/orders/component/order-info.vue'], resolve); } },    
+        { 
+            path: 'home', 
+            title: '首页', 
+            name: 'home_index', 
+            component: resolve => { require(['@/views/home/home.vue'], resolve); } 
+        },
+        { 
+            path: 'ownspace', 
+            title: '个人中心', 
+            name: 'ownspace_index', 
+            component: resolve => { require(['@/views/own-space/own-space.vue'], resolve); } 
+        },
+        { 
+            path: 'message', 
+            title: '消息中心', 
+            name: 'message_index', 
+            component: resolve => { require(['@/views/message/message.vue'], resolve); } 
+        },
+        { 
+            path: 'attribute-value', 
+            title: '商品属性', 
+            name: 'attribute_value', 
+            component: resolve => { require(['@/views/products/attribute-value.vue'], resolve); } 
+        },
+        { 
+            path: 'account-category', 
+            title: '分类管理', 
+            name: 'account_category', 
+            component: resolve => { require(['@/views/system/account-category.vue'], resolve); } 
+        },
+        { 
+            path: 'order/:order_id', 
+            title: '订单详情', 
+            name: 'order-info', 
+            component: resolve => { require(['@/views/orders/component/order-info.vue'], resolve); } 
+        },
+        { 
+            path: 'return-order/:order_id', 
+            title: '退货退款单详情', 
+            name: 'return-order-info', 
+            component: resolve => { require(['@/views/after-sale/component/return-order-info.vue'], resolve); } 
+        },    
     ]
 };
 
@@ -189,6 +225,13 @@ export const appRouter = [
                 component: resolve => { require(['@/views/after-sale/return-order.vue'], resolve); }                
             },
             {
+                path: 'return-money',
+                icon: 'arrow-return-right',
+                name: 'return-money',
+                title: '添加退款单',
+                component: resolve => { require(['@/views/after-sale/return-money.vue'], resolve); }                
+            },
+            {
                 path: 'return-order-list',
                 icon: 'arrow-return-right',
                 name: 'return-order-list',
@@ -204,12 +247,48 @@ export const appRouter = [
         title: '报表中心',
         component: Main,
         children: [
-            { path: 'channel-sale-report', title: '渠道销售报表', name: 'channel-sale-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/channel-sale-report.vue'], resolve); } },
-            { path: 'sale-report', title: '经营日月报表', name: 'sale-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/sale-report.vue'], resolve); } },
-            { path: 'staff-report', title: '客服业绩报表', name: 'staff-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/staff-report.vue'], resolve); } },
-            { path: 'order-report', title: '订单统计报表', name: 'order-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/order-report.vue'], resolve); } },
-            { path: 'product-report', title: '商品销售报表', name: 'product-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/product-report.vue'], resolve); } },
-            { path: 'color-size-report', title: '商品颜色尺码对比', name: 'color-size-report', icon: 'stats-bars', component: resolve => { require(['@/views/report/color-size-report.vue'], resolve); } },
+            { 
+                path: 'channel-sale-report', 
+                title: '渠道销售报表', 
+                name: 'channel-sale-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/channel-sale-report.vue'], resolve); } 
+            },
+            { 
+                path: 'sale-report', 
+                title: '经营日月报表', 
+                name: 'sale-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/sale-report.vue'], resolve); } 
+            },
+            { 
+                path: 'staff-report', 
+                title: '客服业绩报表', 
+                name: 'staff-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/staff-report.vue'], resolve); } 
+            },
+            { 
+                path: 'order-report', 
+                title: '订单统计报表', 
+                name: 'order-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/order-report.vue'], resolve); } 
+            },
+            { 
+                path: 'product-report', 
+                title: '商品销售报表', 
+                name: 'product-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/product-report.vue'], resolve); } 
+            },
+            { 
+                path: 'color-size-report', 
+                title: '商品颜色尺码对比', 
+                name: 'color-size-report', 
+                icon: 'stats-bars', 
+                component: resolve => { require(['@/views/report/color-size-report.vue'], resolve); } 
+            },
             
         ]
     },
@@ -220,7 +299,13 @@ export const appRouter = [
         title: '用户管理',
         component: Main,
         children: [
-            { path: 'users-manager', title: '用户管理', name: 'users-manager', icon: 'ios-infinite', component: resolve => { require(['@/views/system/users.vue'], resolve); } },
+            { 
+                path: 'users-manager', 
+                title: '用户管理', 
+                name: 'users-manager', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/users.vue'], resolve); } 
+            },
         ]
     },
     {
@@ -230,17 +315,83 @@ export const appRouter = [
         title: '系统设置',
         component: Main,
         children: [
-            { path: 'client-manager', title: '客户管理', name: 'client-manager', icon: 'ios-infinite', component: resolve => { require(['@/views/system/client.vue'], resolve); } },
-            { path: 'supplier-manager', title: '供应商管理', name: 'supplier-manager', icon: 'ios-infinite', component: resolve => { require(['@/views/system/supplier.vue'], resolve); } },
-            { path: 'delivery', title: '快递公司管理', name: 'delivery', icon: 'ios-infinite', component: resolve => { require(['@/views/system/delivery.vue'], resolve); } },            
-            { path: 'channel-manager', title: '订单来源', name: 'channel-manager', icon: 'ios-infinite', component: resolve => { require(['@/views/system/channel.vue'], resolve); } },            
-            { path: 'cash', title: '现金银行', name: 'cash', icon: 'ios-infinite', component: resolve => { require(['@/views/system/cash.vue'], resolve); } },
-            { path: 'cost', title: '费用支出', name: 'cost', icon: 'ios-infinite', component: resolve => { require(['@/views/system/cost.vue'], resolve); } },      
-            { path: 'income', title: '其他收入', name: 'income', icon: 'ios-infinite', component: resolve => { require(['@/views/system/income.vue'], resolve); } },
-            { path: 'invoice-type', title: '票据类型', name: 'invoice-type', icon: 'ios-infinite', component: resolve => { require(['@/views/system/invoice-type.vue'], resolve); } },
-            { path: 'printshop-1', title: '印刷厂管理', name: 'printshop-1', icon: 'ios-infinite', component: resolve => { require(['@/views/system/printshop-1.vue'], resolve); } },            
-            { path: 'printshop-2', title: '热印厂管理', name: 'printshop-2', icon: 'ios-infinite', component: resolve => { require(['@/views/system/printshop-2.vue'], resolve); } },            
-            { path: 'printshop-3', title: '刺绣厂管理', name: 'printshop-3', icon: 'ios-infinite', component: resolve => { require(['@/views/system/printshop-3.vue'], resolve); } },                                 
+            { 
+                path: 'client-manager', 
+                title: '客户管理', 
+                name: 'client-manager', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/client.vue'], resolve); }
+            },
+            { 
+                path: 'supplier-manager', 
+                title: '供应商管理', 
+                name: 'supplier-manager', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/supplier.vue'], resolve); }
+            },
+            { 
+                path: 'delivery', 
+                title: '快递公司管理', 
+                name: 'delivery', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/delivery.vue'], resolve); }
+            },            
+            { 
+                path: 'channel-manager', 
+                title: '订单来源', 
+                name: 'channel-manager', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/channel.vue'], resolve); }
+            },            
+            { 
+                path: 'cash', 
+                title: '现金银行', 
+                name: 'cash', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/cash.vue'], resolve); }
+            },
+            { 
+                path: 'cost', 
+                title: '费用支出', 
+                name: 'cost', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/cost.vue'], resolve); }
+            },      
+            { 
+                path: 'income', 
+                title: '其他收入', 
+                name: 'income', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/income.vue'], resolve); }
+            },
+            { 
+                path: 'invoice-type', 
+                title: '票据类型', 
+                name: 'invoice-type', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/invoice-type.vue'], resolve); }
+            },
+            { 
+                path: 'printshop-1', 
+                title: '印刷厂管理', 
+                name: 'printshop-1', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/printshop-1.vue'], resolve); }
+            },            
+            { 
+                path: 'printshop-2', 
+                title: '热印厂管理', 
+                name: 'printshop-2', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/printshop-2.vue'], resolve); }
+            },            
+            { 
+                path: 'printshop-3', 
+                title: '刺绣厂管理', 
+                name: 'printshop-3', 
+                icon: 'ios-infinite', 
+                component: resolve => { require(['@/views/system/printshop-3.vue'], resolve); }
+            },                                 
         ]
     }
 ];

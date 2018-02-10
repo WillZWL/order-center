@@ -15,7 +15,7 @@
                 <Card>
                     <p slot="title">
                         <Icon type="document"></Icon>
-                        新建退货单
+                        新建退款单
                     </p>
                     <Row class="margin-top-10">
                         <Form ref="addReturnOrderForm" :model="addReturnOrderForm" :label-width="100" label-position="right" :rules='returnOrderValid'>
@@ -55,34 +55,10 @@
                                             </FormItem>                        
                                         </Col>
                                     </Row>
-                                </Card>
-                            </Col>
-                            <Col span="24" class="list margin-top-10">
-                                <Card>
-                                    <p slot="title">
-                                        产品&nbsp;&nbsp; 总数量 {{ itemTotal }},  &nbsp;&nbsp; 总金额 {{ itemAmount }}
-                                        <Button class="add-button" type="primary" @click="addItem">添加产品</Button>
-                                    </p>
-                                    <Row>
-                                        <Col>
-                                            <can-edit-table
-                                                ref="orderItemTable"
-                                                v-model="orderItemData" 
-                                                @on-change="handleChange"  
-                                                @on-delete="handleDel"
-                                                :editIncell="true" 
-                                                :columns-list="orderItemColumn"
-                                            ></can-edit-table>
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Col>
-                            <Col span="24" class="list margin-top-10">
-                                <Card>
                                     <Row>
                                         <Col span="4" offset="11">
                                             <Button type="ghost" @click="createOrderReset">重置</Button>                                            
-                                            <Button type="primary" @click="createOrder">创建退货单</Button>
+                                            <Button type="primary" @click="createOrder">创建退款单</Button>
                                         </Col>
                                     </Row>
                                 </Card>

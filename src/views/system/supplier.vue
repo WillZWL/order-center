@@ -60,9 +60,9 @@
             <Form ref="addClientForm" :model="addClientForm" :label-width="100" label-position="right">
                 <FormItem label="地址" prop="address">
                     <Col>
-                    <Card v-if="areaModal">
-                        <al-selector v-model="area" data-type="name" level="2" />
-                    </Card>
+                        <Card v-if="areaModal">
+                            <al-selector v-model="area" data-type="name" level="2" />
+                        </Card>
                     </Col>
                     <Input v-model="addClientForm.address" placeholder="请输入详细地址"></Input>
                 </FormItem>
