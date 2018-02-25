@@ -62,9 +62,6 @@
                         </TabPane>
                     </Tabs>
                 </FormItem>
-                <FormItem label="数量" prop="quantity">
-                    <Input v-model="addProductForm.quantity" placeholder="请输入数量"></Input>
-                </FormItem>
                 <FormItem label="供货信息" prop="supplier_id">
                     <Select v-model="addProductForm.supplier_id">
                         <Option v-for="supplier in supplierList" :value="supplier.id" :key="supplier.id">{{ supplier.name }}</Option>
