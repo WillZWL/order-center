@@ -154,7 +154,14 @@ export const appRouter = [
                 name: 'product',
                 title: '产品管理',
                 component: resolve => { require(['@/views/products/product.vue'], resolve); }
-            }
+            },
+            {
+                path: 'inventory',
+                icon: 'compose',
+                name: 'inventory',
+                title: '库存查询',
+                component: resolve => { require(['@/views/products/inventory.vue'], resolve); }
+            },
         ]
     },
     {
