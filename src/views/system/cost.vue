@@ -1,18 +1,19 @@
 <style lang="less">
-    @import './system.less';
+    @import './system.less';    
 </style>
 
 <template>
     <div class="list">
         <Row class="margin-top-10">
-            <Col span="24">
+            <Col span="8">
+                <account-category :type="type"></account-category>
+            </Col>
+            <Col span="16">
                 <Card>
                     <p slot="title">
                         <Icon type="ios-keypad"></Icon>
                         费用支出管理
-                        <Button class="add-button" type="primary" @click="addCash">添加费用支出</Button>
-                        <Button class="add-button" type="primary" @click="categoryManager">分类管理</Button>
-                        <Button class="add-button" type="primary" @click="addCategory">添加分类</Button>                       
+                        <Button class="add-button" type="primary" @click="addCash">添加费用支出</Button>                      
                     </p>
                     <Row>
                         <Col span="24">
@@ -28,18 +29,6 @@
                 </Card>
             </Col>
         </Row>
-        <Modal v-model="addCategoryModal" :closable='true' :mask-closable=false :width="500">
-            <h3 slot="header" style="color:#2D8CF0">添加分类</h3>
-            <Form ref="addCategoryForm" :model="addCategoryForm" :label-width="100" label-position="right" :rules='categoryValid'>
-                <FormItem label="分类名称" prop="name">
-                    <Input v-model="addCategoryForm.name" placeholder="请输入分类名称" ></Input>
-                </FormItem>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="cancelAddCategory">取消</Button>
-                <Button type="primary" :loading="saveLoading" @click="saveCategory">保存</Button>
-            </div>
-        </Modal>
         <Modal v-model="addCashModal" :closable='true' :mask-closable=false :width="500">
             <h3 slot="header" style="color:#2D8CF0">添加费用支出</h3>
             <Form ref="addCashForm" :model="addCashForm" :label-width="100" label-position="right" :rules='cashValid'>
@@ -68,10 +57,12 @@
 
 <script>
 import canEditTable from './../common/components/canEditTable.vue';
+import accountCategory from './account-category.vue';
 export default {
     name: 'editable-table',
     components: {
-        canEditTable
+        canEditTable,
+        accountCategory        
     },
     data () {
         return {
@@ -115,7 +106,6 @@ export default {
                 }
             ],
             editInlineAndCellData: [],
-            addCategoryModal: false,
             addCashModal: false,
             addCashForm: {
                 type: 2,
@@ -125,18 +115,11 @@ export default {
                 subject_code: '',
                 remark: ''
             },
-            addCategoryForm: {
-                type: 2,
-                name: '',
-            },
             saveLoading: false,
             cashValid: {           
                 category: { required: true, message: '请选择分类', trigger: 'submit' },             
                 subject: { required: true, message: '请输入科目', trigger: 'submit' },
                 subject_code: { required: true, message: '请输入科目编号', trigger: 'submit' },                
-            },
-            categoryValid: {
-                name: { required: true, message: '请输入分类名称', trigger: 'submit' }
             },
             categoryList: [],
         };
@@ -199,36 +182,8 @@ export default {
         addCash () {
             this.addCashModal = true;
         },
-        addCategory () {
-            this.addCategoryModal = true;
-        },
         cancelAddCash () {
             this.addCashModal = false;
-        },
-        cancelAddCategory () {
-            this.addCategoryModal = false;
-        },
-        saveCategory () {
-            this.$refs['addCategoryForm'].validate((valid) => {
-                if (valid) {
-                    this.saveLoading = true;
-                    const data = this.addCategoryForm;
-                    const api = `${this.endPoint}account-category`;
-                    const options = {
-                        credentials: false
-                    };
-                    this.$http.post(api, data, options).then(res => {
-                        this.saveLoading = false;
-                        if (res.body.status) {
-                            this.$Message.error(res.body.message);
-                        } else {
-                            this.addCategoryForm.name = '';
-                            this.$Message.success('添加成功');
-                            this.addCategoryModal = false;
-                        }
-                    });
-                }
-            });
         },
         saveCash () {
             this.$refs['addCashForm'].validate((valid) => {
@@ -261,15 +216,6 @@ export default {
             });
             return list[0];
         },
-        categoryManager() {
-            let query = {
-                type: this.type,
-            };
-            this.$router.push({
-                name: 'account_category',
-                query: query
-            });
-        }
     },
     created () {
         this.getData();

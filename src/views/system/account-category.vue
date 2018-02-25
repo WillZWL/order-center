@@ -1,15 +1,17 @@
 <style lang="less">
     @import './system.less';
+    @import '../../styles/common.less';    
 </style>
 
 <template>
     <div class="list">
-        <Row class="margin-top-10">
+        <Row class="margin-right-10">
             <Col span="24">
                 <Card>
                     <p slot="title">
                         <Icon type="ios-keypad"></Icon>
                         分类管理
+                        <Button class="add-button" type="primary" @click="addCategory">添加分类</Button>                        
                     </p>
                     <Row>
                         <Col span="24">
@@ -18,7 +20,7 @@
                                 @on-cell-change="handleCellChange" 
                                 @on-change="handleChange"  
                                 @on-delete="handleDel"
-                                :editIncell="true" 
+                                :editIncell="false" 
                                 :columns-list="editInlineAndCellColumn"
                             ></can-edit-table>
                         </Col>
@@ -26,6 +28,18 @@
                 </Card>
             </Col>
         </Row>
+        <Modal v-model="addCategoryModal" :closable='true' :mask-closable=false :width="500">
+            <h3 slot="header" style="color:#2D8CF0">添加分类</h3>
+            <Form ref="addCategoryForm" :model="addCategoryForm" :label-width="100" label-position="right" :rules='categoryValid'>
+                <FormItem label="分类名称" prop="name">
+                    <Input v-model="addCategoryForm.name" placeholder="请输入分类名称" ></Input>
+                </FormItem>
+            </Form>
+            <div slot="footer">
+                <Button type="text" @click="cancelAddCategory">取消</Button>
+                <Button type="primary" :loading="saveLoading" @click="saveCategory">保存</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 
@@ -36,10 +50,14 @@ export default {
     components: {
         canEditTable
     },
+    props: {
+        type:{
+            type: Number,
+        },
+    },
     data () {
         return {
             endPoint: this.$store.state.app.endPoint,
-            type: this.$route.query.type,
             editInlineAndCellColumn: [
                 {
                     title: '序号',
@@ -63,7 +81,12 @@ export default {
             saveLoading: false,
             categoryValid: {
                 name: { required: true, message: '请输入分类名称', trigger: 'submit' }
-            }
+            },
+            addCategoryForm: {
+                type: this.type,
+                name: '',
+            },
+            addCategoryModal: false,
         };
     },
     methods: {
@@ -101,6 +124,34 @@ export default {
                     this.$Message.success(`${msg}成功`);
                 } else {
                     this.$Message.error(`${msg}失败`);
+                }
+            });
+        },
+        addCategory () {
+            this.addCategoryModal = true;
+        },
+        cancelAddCategory () {
+            this.addCategoryModal = false;
+        },
+        saveCategory () {
+            this.$refs['addCategoryForm'].validate((valid) => {
+                if (valid) {
+                    this.saveLoading = true;
+                    const data = this.addCategoryForm;
+                    const api = `${this.endPoint}account-category`;
+                    const options = {
+                        credentials: false
+                    };
+                    this.$http.post(api, data, options).then(res => {
+                        this.saveLoading = false;
+                        if (res.body.status) {
+                            this.$Message.error(res.body.message);
+                        } else {
+                            this.addCategoryForm.name = '';
+                            this.$Message.success('添加成功');
+                            this.addCategoryModal = false;
+                        }
+                    });
                 }
             });
         },
