@@ -10,7 +10,36 @@
                     <Tabs type="card" @on-click="switchTab" :value="status">
                         <TabPane v-for="status in statusArr" :label="status" :key="status"></TabPane>
                     </Tabs>
-                    <Row>
+                    <Form :label-width="100" label-position="right">
+                        <Row class="margin-top-10">
+                            <Col span="6">
+                                <FormItem label="订单号">
+                                    <Input placeholder="请输入订单号"></Input>
+                                </FormItem>
+                            </Col>
+                            <Col span="6">
+                                <FormItem label="单位名称">
+                                    <Input placeholder="请输入单位名称"></Input>                                            
+                                </FormItem>
+                            </Col>
+                            <Col span="6">
+                                <FormItem label="订单开始日期">
+                                    <DatePicker format="yyyy-MM-dd" type="date" placeholder="订单开始日期" style="width:100%"></DatePicker>
+                                </FormItem>
+                            </Col>
+                            <Col span="6">
+                                <FormItem label="订单结束日期">
+                                    <DatePicker format="yyyy-MM-dd" type="date" placeholder="订单结束日期" style="width:100%"></DatePicker>
+                                </FormItem>
+                            </Col>                        
+                        </Row>
+                        <Row>
+                            <Col span="8" offset="12">              
+                                <Button type="primary" class="margin-right-10">查询</Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                    <Row class="margin-top-10">
                         <Col span="24">
                             <can-edit-table
                                 v-model="orderList"  

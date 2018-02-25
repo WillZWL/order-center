@@ -19,7 +19,7 @@
                                 @on-cell-change="handleCellChange" 
                                 @on-change="handleChange"  
                                 @on-delete="handleDel"
-                                :editIncell="true" 
+                                :editIncell="true"
                                 :columns-list="editInlineAndCellColumn"
                             ></can-edit-table>
                         </Col>

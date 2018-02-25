@@ -27,9 +27,58 @@
                 </Card>
             </Col>
         </Row>
-        <Modal v-model="addPoModal" :closable='true' :mask-closable=false :width="800">
+        <Modal v-model="addPoModal" :closable='true' :mask-closable=false :width="1000">
             <h3 slot="header" style="color:#2D8CF0">进货入库单</h3>
             <Collapse v-model="panelValue" accordion>
+                <Panel name="basePanel">
+                    基本信息
+                    <p slot="content">
+                        <Row>
+                            <Col span="24">
+                                <Card>
+                                    <Form ref="baseForm" :model="addPoBaseForm" :label-width="80" label-position="right">
+                                        <Row>
+                                            <Col span="8">
+                                                <FormItem label="供货商">
+                                                    <Select v-model="searchProductForm.cate_id">
+                                                        <Option v-for="cate in categoryList" :value="cate.id" :key="cate.id">{{ cate.name }}</Option>
+                                                    </Select>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8">
+                                                <FormItem label="经手人">
+                                                    <Select v-model="searchProductForm.cate_id">
+                                                        <Option v-for="cate in categoryList" :value="cate.id" :key="cate.id">{{ cate.name }}</Option>
+                                                    </Select>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8">
+                                                <FormItem label="交货日期">
+                                                    <DatePicker format="yyyy-MM-dd" type="date" placeholder="交货日期" style="width:100%"></DatePicker>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8">
+                                                <FormItem label="摘要">
+                                                    <Input type="textarea" :rows="4" placeholder="摘要"></Input>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8">
+                                                <FormItem label="附加说明">
+                                                    <Input type="textarea" :rows="4" placeholder="附加说明"></Input>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8">
+                                            </Col>
+                                            <Col span="4" offset="11">                                          
+                                                <Button type="primary" @click="addBase">确定</Button>
+                                            </Col>
+                                        </Row>
+                                    </Form>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </p>
+                </Panel>
                 <Panel name="searchPanel">
                     搜索选择产品
                     <p slot="content">
@@ -111,7 +160,7 @@ export default {
     data () {
         return {
             type: 1,
-            panelValue: 'searchPanel',
+            panelValue: 'basePanel',
             endPoint: this.$store.state.app.endPoint,
             editInlineAndCellColumn: [
                 {
@@ -214,6 +263,9 @@ export default {
             ],
             editInlineAndCellData: [],
             addPoModal: false,
+            addPoBaseForm: {
+
+            },
             addPoForm: {
                 name: ''
             },
@@ -304,6 +356,18 @@ export default {
                     align: 'center',
                     key: 'xxxxl_quantity',
                     editable: true
+                },
+                {
+                    title: '单价',
+                    align: 'center',
+                    key: 'price',
+                    editable: true,
+                },
+                {
+                    title: '金额',
+                    align: 'center',
+                    key: 'amount',
+                    editable: true,
                 },
                 {
                     title: '操作',
@@ -411,6 +475,7 @@ export default {
             this.stockListData = [];
             this.chooseedProduct.color.forEach(color => {
                 const stock = {
+                    editting: true,
                     color: color,
                     ss_quantity: 0,
                     s_quantity: 0,
@@ -427,6 +492,9 @@ export default {
         addStock () {
             this.panelValue = 'stockPanel';
         },
+        addBase () {
+            this.panelValue = 'searchPanel';
+        }
     },
     created () {
         this.getData();

@@ -33,15 +33,19 @@
                                             <FormItem label="退款金额" prop="amount">
                                                 <Input v-model="addReturnOrderForm.amount" placeholder="请输入退款金额"></Input>                                                
                                             </FormItem>
+                                            <FormItem label="快递类型">
+                                                <Input v-model="addReturnOrderForm.order_no" placeholder="快递类型"></Input>                                                
+                                            </FormItem>                                            
                                         </Col>
                                         <Col span="8">
                                             <FormItem label="日期" prop="return_date">
                                                 <DatePicker format="yyyy-MM-dd" type="date" v-model="addReturnOrderForm.return_date" placeholder="日期" style="width:100%"></DatePicker>
                                             </FormItem>
-                                            <FormItem label="截图凭证">
-                                                <Upload multiple :on-success="uploadSuccess" :on-remove="removeUpload" :action="invoiceUploadUrl">
-                                                    <Button type="ghost" icon="ios-cloud-upload-outline">上传截图凭证</Button>
-                                                </Upload>
+                                            <FormItem label="备注" prop="remark">
+                                                <Input v-model="addReturnOrderForm.remark" placeholder="备注"></Input>                                    
+                                            </FormItem> 
+                                            <FormItem label="快递单号">
+                                                <Input v-model="addReturnOrderForm.order_no" placeholder="快递单号"></Input>                                                
                                             </FormItem>                             
                                         </Col>
                                         <Col span="8">
@@ -50,9 +54,11 @@
                                                     <Option v-for="user in users" :value="`${user.id}`" :key="user.id">{{ user.name }}</Option>
                                                 </Select>
                                             </FormItem>
-                                            <FormItem label="备注" prop="remark">
-                                                <Input v-model="addReturnOrderForm.remark" type="textarea" :rows="4" placeholder="备注"></Input>                                    
-                                            </FormItem>                        
+                                            <FormItem label="截图凭证">
+                                                <Upload multiple :on-success="uploadSuccess" :on-remove="removeUpload" :action="invoiceUploadUrl">
+                                                    <Button type="ghost" icon="ios-cloud-upload-outline">上传截图凭证</Button>
+                                                </Upload>
+                                            </FormItem>
                                         </Col>
                                     </Row>
                                 </Card>

@@ -7,139 +7,146 @@
 </style>
 <template>
     <div>
-        <Row class="margin-top-10">
+        <Row>
             <Col span="24">
                 <Card>
                     <p slot="title">
                         <Icon type="ios-edit"></Icon>
                         新建订单
                     </p>
-                    <Row class="margin-top-10">
+                    <Row>
                         <Form ref="addOrderForm" :model="addOrderForm" :label-width="100" label-position="right" :rules='orderValid'>
-                            <Col span="24">
-                                <Card>
-                                    <p slot="title">
-                                        <Icon type="ios-edit"></Icon>
-                                        基本信息
-                                    </p>
-                                    <Row>
-                                        <Col span="8">
-                                            <FormItem label="订单日期" prop="order_date">
-                                                <DatePicker format="yyyy-MM-dd" type="date" v-model="addOrderForm.order_date" placeholder="订单日期" style="width:100%"></DatePicker>
-                                            </FormItem>
-                                            <FormItem label="购买单位" prop="client_id">
-                                                <Select v-model="addOrderForm.client_id" placeholder="请选择购买单位">
-                                                    <Option v-for="client in clients" :value="`${client.id}`" :key="client.id">{{ client.name }}</Option>
-                                                </Select>
-                                            </FormItem>
-                                            <FormItem label="快递公司" prop="delivery_company_id">
-                                                <Select v-model="addOrderForm.delivery_company_id" placeholder="请选择快递公司">
-                                                    <Option v-for="delivery in deliverys" :value="`${delivery.id}`" :key="delivery.id">{{ delivery.name }}</Option>
-                                                </Select>
-                                            </FormItem>
-                                            <FormItem label="订单备注">
-                                                <Input v-model="addOrderForm.remark" type="textarea" :rows="4" placeholder="订单备注"></Input>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="8" class="padding-left-10">
-                                            <FormItem label="渠道" prop="channel_id">
-                                                <Select v-model="addOrderForm.channel_id" placeholder="请选择渠道">
-                                                    <Option v-for="channel in channels" :value="`${channel.id}`" :key="channel.id">{{ channel.name }}</Option>
-                                                </Select>
-                                            </FormItem>
-                                            <FormItem label="票据类型">
-                                                <Col span="10">
-                                                    <Select v-model="addOrderForm.invoice_type" placeholder="请选择票据类型">
-                                                        <Option value="">无</Option>
-                                                        <Option v-for="invoice_type in invoiceTypes" :value="`${invoice_type.id}`" :key="invoice_type.id">{{ invoice_type.name }}</Option>
+                            <Collapse v-model="panelValue" accordion>
+                                <Panel name="basePanel">
+                                    基本信息                                
+                                    <p slot="content">
+                                        <Row>
+                                            <Col span="8">
+                                                <FormItem label="订单日期" prop="order_date">
+                                                    <DatePicker format="yyyy-MM-dd" type="date" v-model="addOrderForm.order_date" placeholder="订单日期" style="width:100%"></DatePicker>
+                                                </FormItem>
+                                                <FormItem label="购买单位" prop="client_id">
+                                                    <Select v-model="addOrderForm.client_id" placeholder="请选择购买单位">
+                                                        <Option v-for="client in clients" :value="`${client.id}`" :key="client.id">{{ client.name }}</Option>
                                                     </Select>
-                                                </Col>
-                                                <Col span="8" class="margin-left-10">
-                                                    <Button v-if="addOrderForm.invoice_type == 1" class="add-receipt" type="primary" @click="addReceipt(1)">添加发票</Button>
-                                                    <Button v-if="addOrderForm.invoice_type == 2" class="add-receipt" type="primary" @click="addReceipt(2)">添加收据</Button>                                                               
-                                                </Col>
-                                            </FormItem>
-                                            <FormItem label="收款账号" prop="account_id">
-                                                <Select v-model="addOrderForm.account_id" placeholder="请选择收款账号">
-                                                    <Option v-for="account in accounts" :value="`${account.id}`" :key="account.id">{{ account.subject }}</Option>
-                                                </Select>                                               
-                                            </FormItem>
-                                            <FormItem label="付款备注">
-                                                <Input v-model="addOrderForm.payment_remark" type="textarea" :rows="4" placeholder="付款备注"></Input>
-                                            </FormItem>
+                                                </FormItem>
+                                                <FormItem label="快递公司" prop="delivery_company_id">
+                                                    <Select v-model="addOrderForm.delivery_company_id" placeholder="请选择快递公司">
+                                                        <Option v-for="delivery in deliverys" :value="`${delivery.id}`" :key="delivery.id">{{ delivery.name }}</Option>
+                                                    </Select>
+                                                </FormItem>
+                                                <FormItem label="订单备注">
+                                                    <Input v-model="addOrderForm.remark" type="textarea" :rows="4" placeholder="订单备注"></Input>
+                                                </FormItem>
+                                                <FormItem label="联系人">
+                                                    <Input v-model="addOrderForm.contacts_name" placeholder="联系人"></Input>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8" class="padding-left-10">
+                                                <FormItem label="渠道" prop="channel_id">
+                                                    <Select v-model="addOrderForm.channel_id" placeholder="请选择渠道">
+                                                        <Option v-for="channel in channels" :value="`${channel.id}`" :key="channel.id">{{ channel.name }}</Option>
+                                                    </Select>
+                                                </FormItem>
+                                                <FormItem label="票据类型">
+                                                    <Col span="10">
+                                                        <Select v-model="addOrderForm.invoice_type" placeholder="请选择票据类型">
+                                                            <Option value="">无</Option>
+                                                            <Option v-for="invoice_type in invoiceTypes" :value="`${invoice_type.id}`" :key="invoice_type.id">{{ invoice_type.name }}</Option>
+                                                        </Select>
+                                                    </Col>
+                                                    <Col span="8" class="margin-left-10">
+                                                        <Button v-if="addOrderForm.invoice_type == 1" class="add-receipt" type="primary" @click="addReceipt(1)">添加发票</Button>
+                                                        <Button v-if="addOrderForm.invoice_type == 2" class="add-receipt" type="primary" @click="addReceipt(2)">添加收据</Button>                                                               
+                                                    </Col>
+                                                </FormItem>
+                                                <FormItem label="收款账号" prop="account_id">
+                                                    <Select v-model="addOrderForm.account_id" placeholder="请选择收款账号">
+                                                        <Option v-for="account in accounts" :value="`${account.id}`" :key="account.id">{{ account.subject }}</Option>
+                                                    </Select>                                               
+                                                </FormItem>
+                                                <FormItem label="付款备注">
+                                                    <Input v-model="addOrderForm.payment_remark" type="textarea" :rows="4" placeholder="付款备注"></Input>
+                                                </FormItem>
+                                                <FormItem label="联系电话">
+                                                    <Input v-model="addOrderForm.mobilephone" placeholder="联系电话"></Input>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="8" class="padding-left-10">
+                                                <FormItem label="接单人" prop="user_id">
+                                                    <Select v-model="addOrderForm.user_id" placeholder="请选择接单人">
+                                                        <Option v-for="user in users" :value="`${user.id}`" :key="user.id">{{ user.name }}</Option>
+                                                    </Select>
+                                                </FormItem>
+                                                <FormItem label="发货时间" prop="delivery_time">
+                                                    <DatePicker format="yyyy-MM-dd" type="date" v-model="addOrderForm.delivery_time" placeholder="发货时间" style="width:100%"></DatePicker>                                                
+                                                </FormItem>
+                                                <FormItem label="付款金额" prop="pay_amount">
+                                                    <Input v-model="addOrderForm.pay_amount" placeholder="收款金额"></Input>                                                
+                                                </FormItem>
+                                                <FormItem label="付款凭证">
+                                                    <Upload multiple :on-success="uploadSuccess" :on-remove="removeUpload" :action="invoiceUploadUrl">
+                                                        <Button type="ghost" icon="ios-cloud-upload-outline">上传付款凭证</Button>
+                                                    </Upload>
+                                                </FormItem>
+                                                <FormItem label="是否印刷">
+                                                    <i-switch v-model="addOrderForm.isPrint">
+                                                        <span slot="open">是</span>
+                                                        <span slot="close">否</span>
+                                                    </i-switch>
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="10">
+                                                <FormItem label="地址">                                            
+                                                    <al-selector v-model="addOrderForm.area" data-type="name" level="2" class="area" />
+                                                </FormItem>
+                                            </Col>
+                                            <Col span="14">
+                                                <Input v-model="addOrderForm.address" placeholder="请输入详细地址"></Input>                                            
+                                            </Col>
+                                        </Row>
+                                        <Col v-if="addOrderForm.isPrint" span="24" class="list">
+                                            <Card>
+                                                <p slot="title">
+                                                    印刷效果图
+                                                </p>
+                                                <Row>
+                                                    <Col>
+                                                        <Upload multiple type="drag" :on-success="uploadSuccess" :on-remove="removeUpload" :action="printImgUploadUrl">
+                                                            <div>
+                                                                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                                                                <p>点击或者拖拽文件到此上传</p>
+                                                            </div>
+                                                        </Upload>
+                                                    </Col>
+                                                </Row>
+                                            </Card>
                                         </Col>
-                                        <Col span="8" class="padding-left-10">
-                                            <FormItem label="接单人" prop="user_id">
-                                                <Select v-model="addOrderForm.user_id" placeholder="请选择接单人">
-                                                    <Option v-for="user in users" :value="`${user.id}`" :key="user.id">{{ user.name }}</Option>
-                                                </Select>
-                                            </FormItem>
-                                            <FormItem label="发货时间" prop="delivery_time">
-                                                <DatePicker format="yyyy-MM-dd" type="date" v-model="addOrderForm.delivery_time" placeholder="发货时间" style="width:100%"></DatePicker>                                                
-                                            </FormItem>
-                                            <FormItem label="付款金额" prop="pay_amount">
-                                                <Input v-model="addOrderForm.pay_amount" placeholder="收款金额"></Input>                                                
-                                            </FormItem>
-                                            <FormItem label="付款凭证">
-                                                <Upload multiple :on-success="uploadSuccess" :on-remove="removeUpload" :action="invoiceUploadUrl">
-                                                    <Button type="ghost" icon="ios-cloud-upload-outline">上传付款凭证</Button>
-                                                </Upload>
-                                            </FormItem>
-                                            <FormItem label="是否印刷">
-                                                <i-switch v-model="addOrderForm.isPrint">
-                                                    <span slot="open">是</span>
-                                                    <span slot="close">否</span>
-                                                </i-switch>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="10">
-                                            <FormItem label="地址">                                            
-                                                <al-selector v-model="addOrderForm.area" data-type="name" level="2" class="area" />
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="14">
-                                            <Input v-model="addOrderForm.address" placeholder="请输入详细地址"></Input>                                            
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Col>
-                            <Col v-if="addOrderForm.isPrint" span="24" class="list margin-top-10">
-                                <Card>
-                                    <p slot="title">
-                                        印刷效果图
+                                        <Col span="4" offset="11" class="margin-bottom-10">
+                                            <Button class="add-button" type="primary" @click="addItem">添加产品</Button>
+                                        </Col>                                        
                                     </p>
-                                    <Row>
-                                        <Col>
-                                            <Upload multiple type="drag" :on-success="uploadSuccess" :on-remove="removeUpload" :action="printImgUploadUrl">
-                                                <div>
-                                                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                                                    <p>点击或者拖拽文件到此上传</p>
-                                                </div>
-                                            </Upload>
+                                </Panel>
+                                <Panel name="itemPanel">
+                                    产品&nbsp;&nbsp; 总数量 {{ itemTotal }},  &nbsp;&nbsp; 总金额 {{ itemAmount }}
+                                    <p slot="content">
+                                        <Col span="24" class="list">
+                                            <Row>
+                                                <Col>
+                                                    <can-edit-table
+                                                        ref="orderItemTable"
+                                                        v-model="orderItemData" 
+                                                        @on-change="handleChange"  
+                                                        @on-delete="handleDel"
+                                                        :editIncell="true" 
+                                                        :columns-list="orderItemColumn"
+                                                    ></can-edit-table>
+                                                </Col>
+                                            </Row>
                                         </Col>
-                                    </Row>
-                                </Card>
-                            </Col>
-                            <Col span="24" class="list margin-top-10">
-                                <Card>
-                                    <p slot="title">
-                                        产品&nbsp;&nbsp; 总数量 {{ itemTotal }},  &nbsp;&nbsp; 总金额 {{ itemAmount }}
-                                        <Button class="add-button" type="primary" @click="addItem">添加产品</Button>
                                     </p>
-                                    <Row>
-                                        <Col>
-                                            <can-edit-table
-                                                ref="orderItemTable"
-                                                v-model="orderItemData" 
-                                                @on-change="handleChange"  
-                                                @on-delete="handleDel"
-                                                :editIncell="true" 
-                                                :columns-list="orderItemColumn"
-                                            ></can-edit-table>
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Col>
+                                </Panel>
+                            </Collapse>
                             <Col span="24" class="list margin-top-10">
                                 <Card>
                                     <Row>
@@ -190,7 +197,7 @@
                 <Button type="primary" @click="finishAddItem">确定</Button>
             </div>
         </Modal>
-        <Modal v-model="addReceiptModal" :closable='true' :mask-closable=false :width="1000">
+        <Modal v-model="addReceiptModal" :closable='true' :mask-closable=false :width="800">
             <h3 slot="header" style="color:#2D8CF0">添加{{ invoiceType === 1 ? '发票' : '收据' }}</h3>
             <Form ref="addOrderReceipt" :model="orderReceiptForm" :label-width="100" label-position="right" :rules='receiptValid'>
                 <Row>
@@ -227,28 +234,18 @@
                             <Input v-model="orderReceiptForm.tax_no" placeholder="请输入税号" ></Input>
                         </FormItem>
                     </Col>
-                    <Col span="12" v-if="invoiceType === 1">
-                        <FormItem label="电话" prop="telphone">
-                            <Input v-model="orderReceiptForm.telphone" placeholder="请输入电话" ></Input>
-                        </FormItem>
-                    </Col>
                 </Row>
                 <Row>
                     <Col v-if="invoiceType === 1">
-                        <FormItem label="地址" prop="address">
-                            <Input v-model="orderReceiptForm.address" placeholder="请输入地址" ></Input>
+                        <FormItem label="电话与地址" prop="address">
+                            <Input v-model="orderReceiptForm.address" placeholder="请输入电话与地址" ></Input>
                         </FormItem>
                     </Col>
                 </Row>
                 <Row>
-                    <Col span="12" v-if="invoiceType === 1">
-                        <FormItem label="开户行" prop="opening_bank">
-                            <Input v-model="orderReceiptForm.opening_bank" placeholder="请输入开户行" ></Input>
-                        </FormItem>
-                    </Col>
-                    <Col span="12" v-if="invoiceType === 1">
-                        <FormItem label="账户" prop="bank_account">
-                            <Input v-model="orderReceiptForm.bank_account" placeholder="请输入账户" ></Input>
+                    <Col span="24" v-if="invoiceType === 1">
+                        <FormItem label="开户行与账户" prop="opening_bank">
+                            <Input v-model="orderReceiptForm.opening_bank" placeholder="请输入开户行与账户" ></Input>
                         </FormItem>
                     </Col>
                 </Row>
@@ -296,6 +293,7 @@ export default {
     },
     data () {
         return {
+            panelValue: 'basePanel',
             endPoint: this.$store.state.app.endPoint,
             printImgUploadUrl: this.$store.state.app.endPoint + 'order/printImgUpload',
             invoiceUploadUrl: this.$store.state.app.endPoint + 'order/invoiceUpload',
@@ -437,6 +435,7 @@ export default {
                     title: '单价',
                     key: 'price',
                     align: 'center',
+                    editable: true,                    
                 },
                 {
                     title: '数量',
@@ -447,7 +446,7 @@ export default {
                     title: '合计',
                     key: 'amount',
                     align: 'center',
-                    editable: true                    
+                    editable: true,                  
                 },
                 {
                     title: '操作',
@@ -543,12 +542,6 @@ export default {
                 tax_no: [
                     { required: true, message: '请输入税号', trigger: 'submit' },
                 ],
-                address: [
-                    { required: true, message: '请输入地址', trigger: 'submit' },
-                ],
-                opening_bank: [
-                    { required: true, message: '请输入开户行', trigger: 'submit' },
-                ],
                 bank_account: [
                     { required: true, message: '请输入账户', trigger: 'submit' },
                 ],
@@ -595,6 +588,7 @@ export default {
             this.addItemModal = false;            
         },
         addItem () {
+            this.panelValue = 'itemPanel';
             this.addItemModal = true;
         },
         addItemToOrder () {
