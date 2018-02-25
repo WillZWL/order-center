@@ -17,7 +17,15 @@
                 </p>
                 <Row>
                     <Col span="24">
-                    <can-edit-table :size="'small'" v-model="editInlineAndCellData" @on-cell-change="handleCellChange" @on-change="handleChange" @on-delete="handleDel" @click-customButton="clickCustomButton" :columns-list="editInlineAndCellColumn" :customeButtonName="'更新地址'"></can-edit-table>
+                    <can-edit-table 
+                    :size="'small'" 
+                    v-model="editInlineAndCellData" 
+                    @on-cell-change="handleCellChange" 
+                    @on-change="handleChange" 
+                    @on-delete="handleDel" 
+                    @click-customButton="clickCustomButton" 
+                    :columns-list="editInlineAndCellColumn" 
+                    :customeButtonName="'编辑'"></can-edit-table>
                     </Col>
                 </Row>
             </Card>
@@ -56,15 +64,30 @@
             </div>
         </Modal>
         <Modal v-model="areaModal" :closable='true' :mask-closable=false :width="600">
-            <h3 slot="header" style="color:#2D8CF0">更新地址</h3>
+            <h3 slot="header" style="color:#2D8CF0">编辑</h3>
             <Form ref="addClientForm" :model="addClientForm" :label-width="100" label-position="right">
+                <FormItem label="单位名称" prop="name">
+                    <Input v-model="client.name" placeholder="请输入单位名称"></Input>
+                </FormItem>
+                <FormItem label="单位编号" prop="code">
+                    <Input v-model="client.code" placeholder="请输入单位编号"></Input>
+                </FormItem>
+                <FormItem label="联系人" prop="contacts_name">
+                    <Input v-model="client.contacts_name" placeholder="请输入联系人"></Input>
+                </FormItem>
+                <FormItem label="电话" prop="mobilephone">
+                    <Input v-model="client.mobilephone" placeholder="请输入联系电话"></Input>
+                </FormItem>
+                <FormItem label="备注" prop="remark">
+                    <Input v-model="client.remark" placeholder="备注"></Input>
+                </FormItem>
                 <FormItem label="地址" prop="address">
                     <Col>
                     <Card v-if="areaModal">
                         <al-selector v-model="area" data-type="name" level="2" />
                     </Card>
                     </Col>
-                    <Input v-model="addClientForm.address" placeholder="请输入详细地址"></Input>
+                    <Input v-model="client.address" placeholder="请输入详细地址"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -138,7 +161,7 @@ export default {
                 align: 'center',
                 key: 'handle',
                 width: 180,
-                handle: ['edit', 'delete', 'custom']
+                handle: ['', 'delete', 'custom']
             }
             ],
             editInlineAndCellData: [],
