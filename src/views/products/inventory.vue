@@ -21,17 +21,17 @@
                                     </Col>
                                     <Col span="12">
                                         <FormItem label="产品编号">
-                                            <Input placeholder="请输入产品编号"></Input>                                            
+                                            <Input placeholder="请输入产品编号"></Input>
                                         </FormItem>
-                                    </Col>                       
+                                    </Col>
                                 </Row>
                                 <Row>
-                                    <Col span="8" offset="12">              
+                                    <Col span="8" offset="12">
                                         <Button type="primary" class="margin-right-10">查询</Button>
                                     </Col>
                                 </Row>
                             </Form>
-                        </Col>                        
+                        </Col>
                         <Col span="24" class="margin-top-10">
                             <can-edit-table
                                 v-model="editInlineAndCellData" 

@@ -14,6 +14,29 @@
                     </p>
                     <Row>
                         <Col span="24">
+                            <Form :label-width="100" label-position="right">
+                                <Row class="margin-top-10">
+                                    <Col span="12">
+                                        <FormItem label="产品名称">
+                                            <Input placeholder="请输入产品名称"></Input>
+                                        </FormItem>
+                                    </Col>
+                                    <Col span="12">
+                                        <FormItem label="产品编号">
+                                            <Input placeholder="请输入产品编号"></Input>
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span="8" offset="12">
+                                        <Button type="primary" class="margin-right-10">查询</Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Col>
+                    </Row>
+                    <Row class="margin-top-10">
+                        <Col span="24">
                             <can-edit-table
                                 v-model="editInlineAndCellData" 
                                 @on-cell-change="handleCellChange" 
