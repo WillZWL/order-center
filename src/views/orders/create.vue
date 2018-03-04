@@ -69,7 +69,7 @@
                                                     <Input v-model="addOrderForm.payment_remark" type="textarea" :rows="4" placeholder="付款备注"></Input>
                                                 </FormItem>
                                                 <FormItem label="联系电话">
-                                                    <Input v-model="addOrderForm.mobilephone" placeholder="联系电话"></Input>
+                                                    <Input v-model="addOrderForm.contacts_tel" placeholder="联系电话"></Input>
                                                 </FormItem>
                                             </Col>
                                             <Col span="8" class="padding-left-10">
@@ -136,8 +136,7 @@
                                                     <can-edit-table
                                                         ref="orderItemTable"
                                                         v-model="orderItemData" 
-                                                        @on-change="handleChange"  
-                                                        @on-delete="handleDel"
+                                                        @on-change="handleChange"
                                                         :editIncell="true" 
                                                         :columns-list="orderItemColumn"
                                                     ></can-edit-table>
@@ -237,15 +236,15 @@
                 </Row>
                 <Row>
                     <Col v-if="invoiceType === 1">
-                        <FormItem label="电话与地址" prop="address">
-                            <Input v-model="orderReceiptForm.address" placeholder="请输入电话与地址" ></Input>
+                        <FormItem label="电话与地址">
+                            <Input v-model="orderReceiptForm.tel_and_address" placeholder="请输入电话与地址"></Input>
                         </FormItem>
                     </Col>
                 </Row>
                 <Row>
                     <Col span="24" v-if="invoiceType === 1">
-                        <FormItem label="开户行与账户" prop="opening_bank">
-                            <Input v-model="orderReceiptForm.opening_bank" placeholder="请输入开户行与账户" ></Input>
+                        <FormItem label="开户行与账户">
+                            <Input v-model="orderReceiptForm.bank_and_account" placeholder="请输入开户行与账户"></Input>
                         </FormItem>
                     </Col>
                 </Row>
@@ -306,7 +305,7 @@ export default {
             },
             addOrderForm: {
                 isPrint: 0,
-                order_date: moment(),
+                order_date: '',
                 channel_id: '',
                 client_id: '',
                 invoice_type: '',
@@ -320,13 +319,14 @@ export default {
                 invoiceImgs: [],
                 account_id: '',
                 pay_amount: 0,
-                area: [],
+                contacts_name: '',
+                contacts_tel: '',
+                province: '',
+                city: '',
+                district: '',
                 address: '',     
             },
             orderValid: {
-                order_date: [
-                    { required: true, type:'date', message: '请输入订单日期', trigger: 'change' },
-                ],
                 channel_id: [
                     { required: true, message: '请选择渠道', trigger: 'change' },
                 ],
@@ -335,9 +335,6 @@ export default {
                 ],
                 client_id: [
                     { required: true, message: '请选择购买单位', trigger: 'change' },
-                ],
-                delivery_time: [
-                    { required: true, type:'date', message: '请选择发货时间', trigger: 'change' },
                 ],
                 delivery_company_id: [
                     { required: true, message: '请选择快递公司', trigger: 'change' },
@@ -542,9 +539,6 @@ export default {
                 tax_no: [
                     { required: true, message: '请输入税号', trigger: 'submit' },
                 ],
-                bank_account: [
-                    { required: true, message: '请输入账户', trigger: 'submit' },
-                ],
                 quantity: [
                     { required: true, message: '请输入数量', trigger: 'submit' },
                 ],
@@ -560,10 +554,8 @@ export default {
                 client_id: '',
                 client_name: '',
                 tax_no: '',
-                address: '',
-                telphone: '',
-                opening_bank: '',
-                bank_account: '',
+                tel_and_address: '',
+                bank_and_account: '',
                 quantity: '',
                 amount: '',
                 remark: '',
@@ -580,9 +572,6 @@ export default {
             }
             val[index] = product;
             this.orderItemData = val;
-        },
-        handleDel () {
-
         },
         finishAddItem () {
             this.addItemModal = false;            
@@ -695,7 +684,7 @@ export default {
             });
         },
         getProductInventorys () {
-            const api = `${this.endPoint}product-inventorys`;
+            const api = `${this.endPoint}product/inventorys`;
             const options = {
                 credentials: false
             };
@@ -703,7 +692,7 @@ export default {
                 params: this.searchProductForm
             }, options).then(res => {
                 if (res.body.data) {
-                    this.productInventoryData = res.body.data;
+                    this.productInventoryData = res.body.data.rows;
                 }
             });
         },
@@ -729,7 +718,6 @@ export default {
         },
         createOrder () {
             this.$refs['addOrderForm'].validate((valid) => {
-                console.log(this.orderItemData.length);
                 if (valid) {
                     if (this.orderItemData.length > 0) {
                         if (this.invoiceType > 0 && this.orderReceiptForm.create_date === '') {
@@ -743,6 +731,10 @@ export default {
                         const orderData = this.addOrderForm;
                         orderData.item_total = this.itemTotal;
                         orderData.item_amount = this.itemAmount;
+
+                        orderData.province = this.addOrderForm.area[0];
+                        orderData.city = this.addOrderForm.area[1];
+                        orderData.district = this.addOrderForm.area[2];
     
                         const orderReceiptData = this.orderReceiptForm;
                         orderReceiptData.type = this.invoiceType;
@@ -753,11 +745,11 @@ export default {
                         }
                         this.$http.post(api, data, options).then(res => {
                             if (res.body) {
-                                console.log(res.body);
                                 const order = res.body.order;
                                 this.$Message.success(`${order.order_sn} 创建成功`);
                                 this.$refs['addOrderForm'].resetFields();
-                                // this.addOrderForm = this.resetForm(orderData);
+                                this.$refs['addOrderReceipt'].resetFields();
+                                this.orderItemData = [];
                             } else {
                                 this.$Message.error('创建失败');
                             }
@@ -846,6 +838,8 @@ export default {
         this.getAccounts();
         this.getUsers();
         this.addOrderForm.user_id = this.userId;
+        this.addOrderForm.order_date = moment();
+        this.addOrderForm.delivery_time = moment();
     }
 }
 </script>

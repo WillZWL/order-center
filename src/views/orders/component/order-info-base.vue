@@ -111,7 +111,7 @@ const itemCol = [
     },
     {
         title: '颜色',
-        key: 'color'
+        key: 'color_name'
     },
     {
         title: 'SS',

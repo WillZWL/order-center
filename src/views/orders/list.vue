@@ -13,32 +13,33 @@
                     <Tabs type="card" @on-click="switchTab" :value="status">
                         <TabPane v-for="status in statusArr" :label="status" :key="status"></TabPane>
                     </Tabs>
-                    <Form :label-width="100" label-position="right">
+                    <Form ref="searchForm" :model="searchForm" :label-width="100" label-position="right">
                         <Row class="margin-top-10">
                             <Col span="6">
                                 <FormItem label="订单号">
-                                    <Input placeholder="请输入订单号"></Input>
+                                    <Input placeholder="请输入订单号" v-model="searchForm.order_sn"></Input>
                                 </FormItem>
                             </Col>
                             <Col span="6">
                                 <FormItem label="单位名称">
-                                    <Input placeholder="请输入单位名称"></Input>                                            
+                                    <Input placeholder="请输入单位名称" v-model="searchForm.client_name"></Input>                                            
                                 </FormItem>
                             </Col>
                             <Col span="6">
                                 <FormItem label="订单开始日期">
-                                    <DatePicker format="yyyy-MM-dd" type="date" placeholder="订单开始日期" style="width:100%"></DatePicker>
+                                    <DatePicker format="yyyy-MM-dd" type="date" v-model="searchForm.start_date" placeholder="订单开始日期" style="width:100%"></DatePicker>
                                 </FormItem>
                             </Col>
                             <Col span="6">
                                 <FormItem label="订单结束日期">
-                                    <DatePicker format="yyyy-MM-dd" type="date" placeholder="订单结束日期" style="width:100%"></DatePicker>
+                                    <DatePicker format="yyyy-MM-dd" type="date" v-model="searchForm.end_date" placeholder="订单结束日期" style="width:100%"></DatePicker>
                                 </FormItem>
                             </Col>                        
                         </Row>
                         <Row>
-                            <Col span="8" offset="12">              
-                                <Button type="primary" class="margin-right-10">查询</Button>
+                            <Col span="8" offset="11">
+                                <Button type="ghost" @click="resetSearchForm">重置</Button>                                                                    
+                                <Button type="primary" class="margin-right-10" @click="searchOrder">查询</Button>
                             </Col>
                         </Row>
                     </Form>
@@ -64,6 +65,7 @@
 
 <script>
 import canEditTable from './../common/components/canEditTable.vue';
+import moment from 'moment';
 export default {
     name: 'order-list',
     components: {
@@ -141,7 +143,13 @@ export default {
             status: 2,
             statusArr: [ '已删除', '已驳回', '待审核', '已审核', '已派单', '已发货' ],
             page: 1,
-            total: 0,            
+            total: 0,
+            searchForm: {
+                order_sn: '',
+                cliend_name: '',
+                start_date: '',
+                end_date: '',
+            }          
         };
     },
     methods: {
@@ -201,7 +209,24 @@ export default {
             this.page = val;
             const params = this.searchForm;
             this.getData(params);
-        }        
+        },
+        resetSearchForm () {
+            this.searchForm = {
+                order_sn: '',
+                cliend_name: '',
+                start_data: '',
+                end_date: '',
+            }      
+        },
+        searchOrder () {
+            console.log(this.searchForm.start_date);      
+            this.searchForm.start_date = moment(this.searchForm.start_date).format('YYYY-MM-DD');
+            this.searchForm.end_date = moment(this.searchForm.end_date).format('YYYY-MM-DD');            
+            // this.searchForm.end_date.toString();           
+            const params = this.searchForm;
+            this.page = 1;
+            this.getData(params);
+        }      
     },
     created () {
         this.getData();
