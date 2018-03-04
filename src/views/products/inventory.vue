@@ -217,7 +217,11 @@ export default {
         }
     },
     created () {
-        this.getData();
+        const params = {};
+        if (this.$route.query.product_id) {
+            params.product_id = this.$route.query.product_id;
+        }
+        this.getData(params);
         this.getCategorys();
     }
 };

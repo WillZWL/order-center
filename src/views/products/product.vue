@@ -169,7 +169,23 @@ export default {
                     title: '数量',
                     align: 'center',
                     key: 'quantity',
-                    editable: true
+                    render: (h, params) => {
+                        return h('div', [
+                            h('a', {
+                                on: {
+                                    click: () => {
+                                        let query = {
+                                            product_id: params.row.id,
+                                        };
+                                        this.$router.push({
+                                            name: 'inventory',
+                                            query: query
+                                        });
+                                    }
+                                }
+                            }, params.row.quantity)
+                        ]);
+                    }
                 },
                 {
                     title: '供应商',
