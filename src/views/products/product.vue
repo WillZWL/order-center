@@ -1,5 +1,6 @@
 <style lang="less">
     @import './product.less';
+    @import '../../styles/common.less';
 </style>
 
 <template>
@@ -14,22 +15,22 @@
                     </p>
                     <Row>
                         <Col span="24">
-                            <Form :label-width="100" label-position="right">
+                            <Form ref="searchForm" :model="searchForm" :label-width="100" label-position="right">
                                 <Row class="margin-top-10">
                                     <Col span="12">
                                         <FormItem label="产品名称">
-                                            <Input placeholder="请输入产品名称"></Input>
+                                            <Input v-model="searchForm.name" placeholder="请输入产品名称"></Input>
                                         </FormItem>
                                     </Col>
                                     <Col span="12">
                                         <FormItem label="产品编号">
-                                            <Input placeholder="请输入产品编号"></Input>
+                                            <Input v-model="searchForm.code" placeholder="请输入产品编号"></Input>
                                         </FormItem>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col span="8" offset="12">
-                                        <Button type="primary" class="margin-right-10">查询</Button>
+                                        <Button type="primary" @click="searchProduct">查询</Button>
                                     </Col>
                                 </Row>
                             </Form>
@@ -46,6 +47,9 @@
                                 :columns-list="editInlineAndCellColumn"
                                 :customeButtonName="'编辑'"
                             ></can-edit-table>
+                        </Col>
+                        <Col span="24" class="align-right margin-top-10">
+                            <Page :total="total" :page-size="20" @on-change="changePage" show-total></Page>
                         </Col>
                     </Row>
                 </Card>
@@ -211,17 +215,25 @@ export default {
             colorList: [],
             sizeList: [],
             supplierList: [],
+            searchForm: {
+                name: '',
+                code: '',
+            },
+            page: 1,
+            total: 0,
         };
     },
     methods: {
-        getData () {
+        getData (params = {}) {
             const api = `${this.endPoint}products`;
             const options = {
                 credentials: false
             };
-            this.$http.get(api, options).then(res => {
+            params.page = this.page;
+            this.$http.get(api, { params }, options).then(res => {
                 if (res.body.data) {
-                    this.editInlineAndCellData = res.body.data;
+                    this.editInlineAndCellData = res.body.data.rows;
+                    this.total = res.body.data.count;
                 }
             });
         },
@@ -335,6 +347,16 @@ export default {
             this.addProductForm.color = val[index].color.split(',');
             this.addProductForm.size = val[index].size.split(',');
             this.addProductModal = true;
+        },
+        searchProduct () {
+            const params = this.searchForm;
+            this.page = 1;
+            this.getData(params);
+        },
+        changePage (val) {
+            this.page = val;
+            const params = this.searchForm;
+            this.getData(params);
         }
     },
     created () {

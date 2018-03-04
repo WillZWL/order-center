@@ -1,3 +1,6 @@
+<style lang="less">
+    @import '../../styles/common.less';
+</style>
 <template>
     <div class="list">
         <Row class="margin-top-10">
@@ -49,6 +52,9 @@
                                 :customeButtonName="'详情'"
                             ></can-edit-table>
                         </Col>
+                        <Col span="24" class="align-right margin-top-10">
+                            <Page :total="total" :page-size="20" @on-change="changePage" show-total></Page>
+                        </Col>                      
                     </Row>
                 </Card>
             </Col>
@@ -134,17 +140,22 @@ export default {
             orderList: [],
             status: 2,
             statusArr: [ '已删除', '已驳回', '待审核', '已审核', '已派单', '已发货' ],
+            page: 1,
+            total: 0,            
         };
     },
     methods: {
-        getData () {
+        getData (params = {}) {
             const api = `${this.endPoint}orders`;
             const options = {
                 credentials: false
             };
-            this.$http.get(api, {params: {status: this.status}}, options).then(res => {
+            params.status = this.status,
+            params.page = this.page,
+            this.$http.get(api, { params }, options).then(res => {
                 if (res.body.data) {
-                    this.orderList = res.body.data;
+                    this.orderList = res.body.data.rows;
+                    this.total = res.body.data.count;
                 }
             });
         },
@@ -185,7 +196,12 @@ export default {
                 name: 'order-info',
                 params: argu
             });
-        }
+        },
+        changePage (val) {
+            this.page = val;
+            const params = this.searchForm;
+            this.getData(params);
+        }        
     },
     created () {
         this.getData();

@@ -23,6 +23,9 @@
                                 :columns-list="editInlineAndCellColumn"
                             ></can-edit-table>
                         </Col>
+                        <Col span="24" class="align-right margin-top-10">
+                            <Page :total="total" :page-size="20" @on-change="changePage" show-total></Page>
+                        </Col>
                     </Row>
                 </Card>
             </Col>
@@ -377,15 +380,18 @@ export default {
                 }
             ],
             stockListData: [],
+            page: 1,
+            total: 100,
         };
     },
     methods: {
-        getData () {
+        getData (params = {}) {
             const api = `${this.endPoint}purchase-orders`;
             const options = {
                 credentials: false
             };
-            this.$http.get(api, options).then(res => {
+            params.page = 1;
+            this.$http.get(api, { params }, options).then(res => {
                 this.editInlineAndCellData = res.body.data;
             });
         },
@@ -494,6 +500,11 @@ export default {
         },
         addBase () {
             this.panelValue = 'searchPanel';
+        },
+        changePage (val) {
+            this.page = val;
+            const params = this.searchForm;
+            this.getData(params);
         }
     },
     created () {
