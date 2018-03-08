@@ -115,16 +115,38 @@ export const appRouter = [
                 path: 'finance-payment',
                 icon: 'document',
                 name: 'finance-payment',
-                title: '应付单',
+                title: '付款单',
                 component: resolve => { require(['@/views/finance/payment.vue'], resolve); }
             },
             {
                 path: 'finance-income',
                 icon: 'document',
                 name: 'finance-income',
-                title: '应收单',
+                title: '收款单',
                 component: resolve => { require(['@/views/finance/income.vue'], resolve); }
             },
+            {
+                path: 'client-finance',
+                icon: 'document',
+                name: 'client-finance',
+                title: '往来单位应收付',
+                component: resolve => { require(['@/views/finance/income.vue'], resolve); }
+            },
+            {
+                path: 'finance-cost',
+                icon: 'document',
+                name: 'finance-cost',
+                title: '费用单',
+                component: resolve => { require(['@/views/finance/payment.vue'], resolve); }
+            },
+            {
+                path: 'finance-invoice',
+                icon: 'document',
+                name: 'finance-invoice',
+                title: '票据查询',
+                component: resolve => { require(['@/views/finance/income.vue'], resolve); }
+            },
+            
         ]
     },
     {

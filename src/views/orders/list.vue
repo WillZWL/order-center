@@ -59,95 +59,20 @@
                     </Row>
                 </Card>
             </Col>
-        </Row>
-
-        <Modal v-model="addReceiptModal" :closable='true' :mask-closable=false :width="800">
-            <h3 slot="header" style="color:#2D8CF0">添加发票</h3>
-            <Form ref="addOrderReceipt" :model="orderReceiptForm" :label-width="100" label-position="right" :rules='receiptValid'>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="日期" prop="create_date">
-                            <DatePicker format="yyyy-MM-dd" type="date" v-model="orderReceiptForm.create_date" placeholder="请选择日期" style="width:100%"></DatePicker>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="接单人" prop="user_id">
-                            <Select v-model="orderReceiptForm.user_id" placeholder="请选择接单人">
-                                <Option v-for="user in users" :value="`${user.id}`" :key="user.id">{{ user.name }}</Option>
-                            </Select>
-                        </FormItem>                      
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="购买单位" prop="client_id">   
-                            <Select v-model="orderReceiptForm.client_id" placeholder="请选择购买单位">
-                                <Option v-for="client in clients" :value="`${client.id}`" :key="client.id">{{ client.name }}</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="单位名称" prop="client_name">
-                            <Input v-model="orderReceiptForm.client_name" placeholder="请输入购买单位" ></Input>
-                        </FormItem>                        
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12" v-if="invoiceType === 1">
-                        <FormItem label="税号" prop="tax_no">
-                            <Input v-model="orderReceiptForm.tax_no" placeholder="请输入税号" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col v-if="invoiceType === 1">
-                        <FormItem label="电话与地址">
-                            <Input v-model="orderReceiptForm.tel_and_address" placeholder="请输入电话与地址"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="24" v-if="invoiceType === 1">
-                        <FormItem label="开户行与账户">
-                            <Input v-model="orderReceiptForm.bank_and_account" placeholder="请输入开户行与账户"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="数量" prop="quantity">
-                            <Input v-model="orderReceiptForm.quantity" placeholder="请输入数量" ></Input>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="金额" prop="amount">
-                            <Input v-model="orderReceiptForm.amount" placeholder="请输入金额" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormItem label="备注">
-                            <Input v-model="orderReceiptForm.remark" type="textarea" :rows="2" placeholder="请输入备注" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="cancelAddReceipt">取消</Button>
-                <Button type="primary" @click="finishAddReceipt">确定</Button>
-            </div>
-        </Modal>        
+        </Row>     
+        <receipt ref="addReceipt" :orderId="orderId"></receipt>
     </div>
 </template>
 
 <script>
 import canEditTable from './../common/components/canEditTable.vue';
+import receipt from './receipt.vue'
 import moment from 'moment';
 export default {
     name: 'order-list',
     components: {
-        canEditTable
+        canEditTable,
+        receipt,
     },
     data () {
         return {
@@ -248,20 +173,7 @@ export default {
                 end_date: '',
             },
             addReceiptModal: false,
-            orderReceiptForm: {
-                type: 1,
-                user_id: '',
-                create_date: '',
-                user_id: '',
-                client_id: '',
-                client_name: '',
-                tax_no: '',
-                tel_and_address: '',
-                bank_and_account: '',
-                quantity: '',
-                amount: '',
-                remark: '',
-            },
+            orderId: 0,
         };
     },
     methods: {
@@ -340,11 +252,14 @@ export default {
             this.getData(params);
         }, 
         addReceipt (order_id) {
-            this.addReceiptModal = true;            
-            console.log(order_id);
+            this.orderId = order_id;
+            this.$refs['addReceipt'].showReceiptModal();
         }      
     },
     created () {
+        if (this.$store.state.data.clients.length === 0) {
+            this.$store.dispatch('getMembers', { type: [ 1 ] });
+        }
         this.getData();
     },
 };

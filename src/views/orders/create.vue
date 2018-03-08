@@ -196,92 +196,18 @@
                 <Button type="primary" @click="finishAddItem">确定</Button>
             </div>
         </Modal>
-        <Modal v-model="addReceiptModal" :closable='true' :mask-closable=false :width="800">
-            <h3 slot="header" style="color:#2D8CF0">添加{{ invoiceType === 1 ? '发票' : '收据' }}</h3>
-            <Form ref="addOrderReceipt" :model="orderReceiptForm" :label-width="100" label-position="right" :rules='receiptValid'>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="日期" prop="create_date">
-                            <DatePicker format="yyyy-MM-dd" type="date" v-model="orderReceiptForm.create_date" placeholder="请选择日期" style="width:100%"></DatePicker>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="接单人" prop="user_id">
-                            <Select v-model="orderReceiptForm.user_id" placeholder="请选择接单人">
-                                <Option v-for="user in users" :value="`${user.id}`" :key="user.id">{{ user.name }}</Option>
-                            </Select>
-                        </FormItem>                      
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="购买单位" prop="client_id">   
-                            <Select v-model="orderReceiptForm.client_id" placeholder="请选择购买单位">
-                                <Option v-for="client in clients" :value="`${client.id}`" :key="client.id">{{ client.name }}</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="单位名称" prop="client_name">
-                            <Input v-model="orderReceiptForm.client_name" placeholder="请输入购买单位" ></Input>
-                        </FormItem>                        
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12" v-if="invoiceType === 1">
-                        <FormItem label="税号" prop="tax_no">
-                            <Input v-model="orderReceiptForm.tax_no" placeholder="请输入税号" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col v-if="invoiceType === 1">
-                        <FormItem label="电话与地址">
-                            <Input v-model="orderReceiptForm.tel_and_address" placeholder="请输入电话与地址"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="24" v-if="invoiceType === 1">
-                        <FormItem label="开户行与账户">
-                            <Input v-model="orderReceiptForm.bank_and_account" placeholder="请输入开户行与账户"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="数量" prop="quantity">
-                            <Input v-model="orderReceiptForm.quantity" placeholder="请输入数量" ></Input>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="金额" prop="amount">
-                            <Input v-model="orderReceiptForm.amount" placeholder="请输入金额" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormItem label="备注">
-                            <Input v-model="orderReceiptForm.remark" type="textarea" :rows="2" placeholder="请输入备注" ></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="cancelAddReceipt">取消</Button>
-                <Button type="primary" @click="finishAddReceipt">确定</Button>
-            </div>
-        </Modal>
+        <receipt ref="addReceipt" :invoiceType="invoiceType"></receipt>        
     </div>
 </template>
 
 <script>
 import Vue from 'vue';
+import { mapActions, mapState } from 'vuex'
 import iviewArea from 'iview-area';
 Vue.use(iviewArea);
 import DragableTable from './../common/components/dragableTable.vue';
 import canEditTable from './../common/components/canEditTable.vue';
+import receipt from './receipt.vue'
 import Cookies from 'js-cookie';
 import moment from 'moment';
 export default {
@@ -289,6 +215,7 @@ export default {
     components: {
         canEditTable,
         DragableTable,
+        receipt,
     },
     data () {
         return {
@@ -346,21 +273,6 @@ export default {
                     { required: true, message: '请输入付款金额', trigger: 'submit' },
                 ],
             },
-            techniqueList: [
-                {
-                    name: '丝网印',
-                    shop: '印刷厂',
-                },
-                {
-                    name: '热转印',
-                    shop: '热印厂',
-                },
-                {
-                    name: '刺绣',
-                    shop: '刺绣厂',
-                }
-            ],
-            chooseTech: [],
             orderItemData: [],
             orderItemColumn: [
                 {
@@ -513,53 +425,8 @@ export default {
                     editable: true
                 },
             ],
-            channels: [],
-            clients: [],
-            invoiceTypes: [],
-            deliverys: [],
-            printShops: [],
-            categorys: [],
-            accounts: [],
-            users: [],
             productInventoryData: [],
-            invoiceType: '',
-            receiptValid: {
-                create_date: [
-                    { required: true, type:'date', message: '请输入发票日期', trigger: 'submit' },
-                ],
-                user_id: [
-                    { required: true, message: '请输入接单人', trigger: 'submit' },
-                ],
-                client_id: [
-                    { required: true, message: '请选择购买单位', trigger: 'submit' },
-                ],
-                client_name: [
-                    { required: true, message: '请输入单位名称', trigger: 'submit' },
-                ],
-                tax_no: [
-                    { required: true, message: '请输入税号', trigger: 'submit' },
-                ],
-                quantity: [
-                    { required: true, message: '请输入数量', trigger: 'submit' },
-                ],
-                amount: [
-                    { required: true, message: '请输入金额', trigger: 'submit' },  
-                ],
-            },
-            orderReceiptForm: {
-                type: 1,
-                user_id: '',
-                create_date: '',
-                user_id: '',
-                client_id: '',
-                client_name: '',
-                tax_no: '',
-                tel_and_address: '',
-                bank_and_account: '',
-                quantity: '',
-                amount: '',
-                remark: '',
-            }
+            invoiceType: 0,
         }
     },
     methods: {
@@ -579,109 +446,6 @@ export default {
         addItem () {
             this.panelValue = 'itemPanel';
             this.addItemModal = true;
-        },
-        addItemToOrder () {
-
-        },
-        getChannels () {
-            const api = `${this.endPoint}channels`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, options).then(res => {
-                if (res.body.data) {
-                    this.channels = res.body.data;
-                }
-            });
-        },
-        getClients () {
-            const api = `${this.endPoint}members`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {
-                params: {
-                    type: 1,
-                }
-            }, options).then(res => {
-                if (res.body.data) {
-                    this.clients = res.body.data;
-                }
-            });
-        },
-        getInvoiceTypes () {
-            const api = `${this.endPoint}invoice-types`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, options).then(res => {
-                if (res.body.data) {
-                    this.invoiceTypes = res.body.data;
-                }
-            });
-        },
-        getDeliverys () {
-            const api = `${this.endPoint}members`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {
-                params: {
-                    type: 3,
-                }
-            }, options).then(res => {
-                if (res.body.data) {
-                    this.deliverys = res.body.data;
-                }
-            });
-        },
-        getPrintShops () {
-            const api = `${this.endPoint}members`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {
-                params: {
-                    type: [ 4, 5, 6],
-                }
-            }, options).then(res => {
-                if (res.body.data) {
-                    this.printShops = res.body.data;
-                }
-            });
-        },
-        getCategorys () {
-            const api = `${this.endPoint}categorys`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, options).then(res => {
-                if (res.body.data) {
-                    this.categorys = res.body.data;
-                }
-            });
-        },
-        getAccounts () {
-            const api = `${this.endPoint}accounts`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {params: { type: 1 }}, options).then(res => {
-                if (res.body.data) {
-                    this.accounts = res.body.data;
-                }
-            });
-        },
-        getUsers () {
-            const api = `${this.endPoint}users`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {params: { type: 1 }}, options).then(res => {
-                if (res.body.data) {
-                    this.users = res.body.data;
-                }
-            });
         },
         getProductInventorys () {
             const api = `${this.endPoint}product/inventorys`;
@@ -789,28 +553,8 @@ export default {
         },
         addReceipt(type) {
             this.invoiceType = type;
-            this.addReceiptModal = true;
+            this.$refs['addReceipt'].showReceiptModal();
         },
-        finishAddReceipt() {
-            this.$refs['addOrderReceipt'].validate((valid) => {
-                if (valid) {
-                    this.addReceiptModal = false;
-                }
-            });
-        },
-        cancelAddReceipt() {
-            const receiptData = this.orderReceiptForm;
-            this.orderReceiptForm = this.resetForm(receiptData);
-            this.addReceiptModal = false;
-        },
-        resetForm(formData) {
-            for (const key in formData) {
-                if (formData.hasOwnProperty(key)) {
-                    formData[key] = ''; 
-                }
-            }
-            return formData;
-        }
     },
     computed: {
         itemTotal: function() {
@@ -826,17 +570,39 @@ export default {
                 amount += parseInt(item.amount);
             });
             return amount;
+        },
+        channels() {
+            return this.$store.state.data.channels;
+        },
+        users () {
+            return this.$store.state.data.users;
+        },
+        accounts () {
+            return this.$store.state.data.accounts;
+        },
+        categorys () {
+            return this.$store.state.data.categorys;
+        },
+        invoiceTypes () {
+            return this.$store.state.data.invoiceTypes;
+        },
+        clients () {
+            return this.$store.state.data.clients;
+        },
+        deliverys () {
+            return this.$store.state.data.deliverys;
+        },
+        orderReceiptForm () {
+            return this.$store.state.order.orderReceipt;
         }
     },
     created () {
-        this.getChannels();
-        this.getClients();
-        this.getInvoiceTypes();
-        this.getDeliverys();
-        this.getPrintShops();
-        this.getCategorys();
-        this.getAccounts();
-        this.getUsers();
+        this.$store.dispatch('getChannels');        
+        this.$store.dispatch('getMembers', { type: [ 1, 3 ] });
+        this.$store.dispatch('getInvoiceTypes');
+        this.$store.dispatch('getCategorys');
+        this.$store.dispatch('getAccounts');
+        this.$store.dispatch('getUsers');
         this.addOrderForm.user_id = this.userId;
         this.addOrderForm.order_date = moment();
         this.addOrderForm.delivery_time = moment();

@@ -6,7 +6,7 @@ const user = {
         userName: Cookies.get('user'),
     },
     mutations: {
-        logout (state, vm) {
+        logout (state) {
             Cookies.remove('user');
             Cookies.remove('access');
         }
