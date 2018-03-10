@@ -246,9 +246,12 @@ export default {
             }      
         },
         searchOrder () {
-            console.log(this.searchForm.start_date);      
-            this.searchForm.start_date = moment(this.searchForm.start_date).format('YYYY-MM-DD');
-            this.searchForm.end_date = moment(this.searchForm.end_date).format('YYYY-MM-DD');         
+            if (this.searchForm.start_date) {
+                this.searchForm.start_date = moment(this.searchForm.start_date).format('YYYY-MM-DD');
+            }
+            if (this.searchForm.end_date) {
+                this.searchForm.end_date = moment(this.searchForm.end_date).format('YYYY-MM-DD');         
+            } 
             const params = this.searchForm;
             this.page = 1;
             this.getData(params);
