@@ -13,6 +13,7 @@ const data = {
         clients: [],
         deliverys: [],
         suppliers: [],
+        printShops: [],
     },
     mutations: {
         setCategorys (state, list) {
@@ -38,6 +39,9 @@ const data = {
         },
         pushSuppliers (state, supplier) {
             state.suppliers.push(supplier);
+        },
+        pushPrintShops (state, printShop) {
+            state.printShops.push(printShop);
         }
     },
     actions: {
@@ -112,6 +116,9 @@ const data = {
                         }
                         if (item.type === 3) {
                             commit('pushDeliverys', item);
+                        }
+                        if (item.type === 4 || item.type === 5 || item.type === 6) {
+                            commit('pushPrintShops', item);
                         }
                     });
                 }

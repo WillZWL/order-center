@@ -61,6 +61,7 @@
                 </Poptip>
                 <Button v-if="order.status === 3" class="status-button" type="primary" @click="orderPrint">印刷分派</Button>
                 <Button v-if="order.status === 4" class="status-button" type="primary" @click="print">打印</Button>                
+                <Button v-if="order.status === 4" class="status-button" type="primary" @click="orderPrint">重新分派</Button>                
             </p>
             <order-info-base 
             :orderPrints="orderPrints"
@@ -71,78 +72,27 @@
             :isPrint="'0'">
             </order-info-base>
         </Card>
-
-        <Modal v-model="orderPrintModal" :closable='true' :mask-closable=false :width="800">
-            <h3 slot="header" style="color:#2D8CF0">印刷分派</h3>
-            <Form ref="orderPrint" :model="orderPrintForm" :label-width="100" label-position="right">
-                <Row>
-                    <Col span="12">
-                        <FormItem label="印刷厂">
-                            <Select v-model="orderPrintForm.printshop[1]" placeholder="请选择印刷厂">
-                                <Option v-for="printshop in printShops" v-if="printshop.type === 4" :value="printshop.id" :key="printshop.id">{{ printshop.name }}</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem  label="印刷费">
-                            <Input v-model.number="orderPrintForm.printshopCost[1]" placeholder="印刷费"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="热转印">
-                            <Select v-model="orderPrintForm.printshop[2]" placeholder="请选择热印厂">
-                                <Option v-for="printshop in printShops" v-if="printshop.type === 5" :value="printshop.id" :key="printshop.id">{{ printshop.name }}</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem  label="印刷费">
-                            <Input v-model.number="orderPrintForm.printshopCost[2]" placeholder="印刷费"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span="12">
-                        <FormItem label="刺绣厂">
-                            <Select v-model="orderPrintForm.printshop[3]" placeholder="请选择刺绣厂">
-                                <Option v-for="printshop in printShops" v-if="printshop.type === 6" :value="printshop.id" :key="printshop.id">{{ printshop.name }}</Option>
-                            </Select>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem  label="印刷费">
-                            <Input v-model.number="orderPrintForm.printshopCost[3]" placeholder="印刷费"></Input>
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>
-            <div slot="footer">
-                <Button type="text" @click="cancelPrint">取消</Button>
-                <Button type="primary" @click="confirmOrderPrint">确定</Button>
-            </div>
-        </Modal>
+        <order-print-company ref="orderPrint"></order-print-company>
     </div>
 </template>
 
 <script>
 
 import orderInfoBase from './order-info-base.vue';
+import orderPrintCompany from '../print-company.vue'
 
 export default {
     name: 'order-info',
     components: {
-        orderInfoBase
+        orderInfoBase,
+        orderPrintCompany
     },
     data () {
         return {
             siteUrl: this.$store.state.app.siteUrl,
             frontUrl: 'http://localhost:8080',
             endPoint: this.$store.state.app.endPoint,
-            orderPrints: [],
             orderItemList: [],
-            order: {},
             orderAttachment: [],
             orderReceipt: [],
             orderPrintModal: false,
@@ -150,7 +100,6 @@ export default {
                 printshop: [],
                 printshopCost: [],
             },
-            printShops: [],
             status: 0,
         };
     },
@@ -158,7 +107,8 @@ export default {
         init () {
             const orderId = this.$route.params.order_id;
             if (orderId) {
-                this.getOrderDetail(orderId);            }
+                this.getOrderDetail(orderId);            
+            }
         },
         getOrderDetail (orderId) {
             const api = `${this.endPoint}order`;
@@ -167,11 +117,12 @@ export default {
             };
             this.$http.get(api, {params: {id: orderId}}, options).then(res => {
                 if (res.body.data) {
-                    this.order = res.body.data.order;
+                    this.$store.commit('setOrder', res.body.data.order);
                     this.orderAttachment = res.body.data.orderAttachment;
                     this.orderItemList = res.body.data.orderItem;
                     this.orderReceipt = res.body.data.orderReceipt;
-                    this.orderPrints = res.body.data.orderPrint;                   
+                    this.$store.commit('setOrderPrints', res.body.data.orderPrint);
+                    this.$store.commit('setOrderPrintForm', res.body.data.orderPrint);                                 
                 }
             });
         }, 
@@ -189,47 +140,19 @@ export default {
             });
         },
         orderPrint() {
-            this.orderPrintModal = true;
-            this.getPrintShops();
-        },
-        cancelPrint() {
-            this.orderPrintModal = false;
-        },
-        confirmOrderPrint() {
-            const api = `${this.endPoint}order/orderPrint`;
-            const data = {
-                order_id: this.order.id,
-                order_sn: this.order.order_sn,
-                orderPrintData: this.orderPrintForm,
-            };
-            const options = {
-                credentials: false
-            };
-            this.$http.post(api, data, options).then(res => {
-                if (res.body.order) {
-                    this.order = res.body.order;
-                    this.orderPrintModal = false;                    
-                } 
-            });
-        },
-        getPrintShops() {
-            const api = `${this.endPoint}members`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {
-                params: {
-                    type: [ 4, 5, 6],
-                }
-            }, options).then(res => {
-                if (res.body.data) {
-                    this.printShops = res.body.data;
-                }
-            });
+            this.$refs['orderPrint'].showOrderPrint();            
         },
         print() {
             const printUrl = `${this.frontUrl}/#/order-print/${this.order.id}`;
             window.open(printUrl);
+        },
+    },
+    computed: {
+        order () {
+            return this.$store.state.order.order;
+        },
+        orderPrints () {
+            return this.$store.state.order.orderPrints;
         },
     },
     created() {
