@@ -124,13 +124,13 @@ export default {
                     title: '订单金额',
                     align: 'center',
                     key: 'amount',
-                    width: 70,                    
+                    width: 75,                    
                 },
                 {
                     title: '付款金额',
                     align: 'center',
                     key: 'payment_amount',
-                    width: 70,                    
+                    width: 75,                    
                 },
                 {
                     title: '状态',
@@ -148,16 +148,18 @@ export default {
                     title: '发票',
                     align: 'center',
                     render: (h, params) => {
-                        return h('Button', {
-                            props: {
-                                type: 'primary',
-                            },
-                            on: {
-                                click: () => {
-                                    this.addReceipt(params.row.id);
+                        if (params.row.receipt === null) {
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                },
+                                on: {
+                                    click: () => {
+                                        this.addReceipt(params.row.id);
+                                    }
                                 }
-                            }
-                        }, '补增');
+                            }, '补增');
+                        }
                     }
                 }
             ],
@@ -187,7 +189,7 @@ export default {
             this.$http.get(api, { params }, options).then(res => {
                 if (res.body.data) {
                     this.orderList = res.body.data.rows;
-                    this.total = res.body.data.count;
+                    this.total = res.body.data.count.length;
                 }
             });
         },
@@ -215,9 +217,9 @@ export default {
             this.status = tab;
             this.orderList = [];
             if (tab !== 1) {
-                this.orderListColumn[this.orderListColumn.length-1].handle = [ '', '', 'custom'];
+                this.orderListColumn[this.orderListColumn.length-2].handle = [ '', '', 'custom'];
             } else {
-                this.orderListColumn[this.orderListColumn.length-1].handle = [ '', 'delete', 'custom'];                
+                this.orderListColumn[this.orderListColumn.length-2].handle = [ '', 'delete', 'custom'];                
             }
             
             this.getData();

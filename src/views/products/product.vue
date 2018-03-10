@@ -248,8 +248,16 @@ export default {
             params.page = this.page;
             this.$http.get(api, { params }, options).then(res => {
                 if (res.body.data) {
+                    res.body.data.rows.forEach(product => {
+                        product.quantity = 0;
+                        if (product.inventory.length > 0) {
+                            const inv = product.inventory[0];
+                            product.quantity = parseInt(inv.ss_quantity, 10) + parseInt(inv.s_quantity, 10) + parseInt(inv.m_quantity, 10) 
+                            + parseInt(inv.l_quantity, 10) + parseInt(inv.xl_quantity, 10) + parseInt(inv.xxl_quantity, 10) + parseInt(inv.xxxl_quantity, 10) + parseInt(inv.xxxxl_quantity, 10);
+                        }
+                    });
                     this.editInlineAndCellData = res.body.data.rows;
-                    this.total = res.body.data.count;
+                    this.total = res.body.data.count.length;
                 }
             });
         },
