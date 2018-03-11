@@ -163,7 +163,6 @@ export default {
         }
     },
     created () {
-        console.log(this.$route.query.attribute_name);
         this.getData();
     }
 };

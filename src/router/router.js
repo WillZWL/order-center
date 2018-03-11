@@ -98,7 +98,13 @@ export const otherRouter = {
             title: '退货退款单详情', 
             name: 'return-order-info', 
             component: resolve => { require(['@/views/after-sale/component/return-order-info.vue'], resolve); } 
-        },    
+        },
+        { 
+            path: 'po_item/:po_id', 
+            title: '入库单详情', 
+            name: 'po-item', 
+            component: resolve => { require(['@/views/stock/purchase-order-item.vue'], resolve); } 
+        },
     ]
 };
 

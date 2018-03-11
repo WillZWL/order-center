@@ -84,8 +84,9 @@ export default {
                             name: 'home_index'
                         });
                     }
+                } else {
+                    this.loginError = 1;
                 }
-                this.loginError = 1;
             });
         }
     }

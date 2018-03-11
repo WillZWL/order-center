@@ -19,10 +19,8 @@
                                 @on-cell-change="handleCellChange" 
                                 @on-change="handleChange"  
                                 @on-delete="handleDel"
-                                @click-customButton="clickCustomButton"
                                 :editIncell="true" 
                                 :columns-list="editInlineAndCellColumn"
-                                :customeButtonName="'详情'"                                
                             ></can-edit-table>
                         </Col>
                         <Col span="24" class="align-right margin-top-10">
@@ -46,14 +44,14 @@
                                             <Col span="8">
                                                 <FormItem label="供货商">
                                                     <Select v-model="addPoBaseForm.supplier_id">
-                                                        <Option v-for="supplier in supplierList" :value="supplier.id" :key="supplier.id+supplier.name">{{ supplier.name }}</Option>
+                                                        <Option v-for="supplier in supplierList" :value="supplier.id" :key="supplier.id">{{ supplier.name }}</Option>
                                                     </Select>
                                                 </FormItem>
                                             </Col>
                                             <Col span="8">
                                                 <FormItem label="经手人">
                                                     <Select v-model="addPoBaseForm.user_id">
-                                                        <Option v-for="user in userList" :value="user.id" :key="user.id+user.name">{{ user.name }}</Option>
+                                                        <Option v-for="user in userList" :value="user.id" :key="user.id">{{ user.name }}</Option>
                                                     </Select>
                                                 </FormItem>
                                             </Col>
@@ -176,23 +174,83 @@ export default {
                     width: 50,
                 },
                 {
-                    title: '供应商',
+                    title: '编号',
                     align: 'center',
-                    key: 'supplier_name',
+                    key: 'product_code',
+                    editable: false
+                },
+                {
+                    title: '商品名称',
+                    align: 'center',
+                    key: 'product_name',
                     width: 200,
                     editable: false
                 },
                 {
-                    title: '创建人',
+                    title: '分类',
                     align: 'center',
-                    key: 'user_name',
+                    key: 'cate_name',
                     editable: false
                 },
                 {
-                    title: '总数量',
+                    title: '颜色',
                     align: 'center',
-                    key: 'quantity',
+                    key: 'color_name',
                     editable: false
+                },
+                {
+                    title: '单价',
+                    align: 'center',
+                    key: 'price',
+                    editable: false
+                },
+                {
+                    title: 'SS',
+                    align: 'center',
+                    key: 'ss_quantity',
+                    editable: true
+                },
+                {
+                    title: 'S',
+                    align: 'center',
+                    key: 's_quantity',
+                    editable: true
+                },
+                {
+                    title: 'M',
+                    align: 'center',
+                    key: 'm_quantity',
+                    editable: true
+                },
+                {
+                    title: 'L',
+                    align: 'center',
+                    key: 'l_quantity',
+                    editable: true
+                },
+                {
+                    title: 'XL',
+                    align: 'center',
+                    key: 'xl_quantity',
+                    editable: true
+                },
+                {
+                    title: '2XL',
+                    align: 'center',
+                    key: 'xxl_quantity',
+                    editable: true
+                },
+                {
+                    title: '3XL',
+                    align: 'center',
+                    key: 'xxxl_quantity',
+                    editable: true
+                },
+                {
+                    title: '4XL',
+                    align: 'center',
+                    key: 'xxxxl_quantity',
+                    editable: true
                 },
                 {
                     title: '金额',
@@ -201,22 +259,10 @@ export default {
                     editable: false
                 },
                 {
-                    title: '摘要',
-                    align: 'center',
-                    key: 'note',
-                    editable: false
-                },
-                {
-                    title: '创建时间',
-                    align: 'center',
-                    key: 'create_date',
-                    editable: false
-                },
-                {
                     title: '操作',
                     align: 'center',
                     key: 'handle',
-                    handle: ['', 'delete', 'custom']
+                    handle: ['edit', 'delete']
                 }
             ],
             editInlineAndCellData: [],
@@ -335,7 +381,7 @@ export default {
             ],
             stockListData: [],
             page: 1,
-            total: 0,
+            total: 100,
         };
     },
     methods: {
@@ -346,8 +392,7 @@ export default {
             };
             params.page = 1;
             this.$http.get(api, { params }, options).then(res => {
-                this.editInlineAndCellData = res.body.data.rows;
-                this.total = res.body.data.count;
+                this.editInlineAndCellData = res.body.data;
             });
         },
         handleDel (val, index) {
@@ -450,15 +495,7 @@ export default {
             this.page = val;
             const params = this.searchForm;
             this.getData(params);
-        },
-        clickCustomButton (val, index) {
-            const po = val[index];
-            let argu = { po_id: po.id };
-            this.$router.push({
-                name: 'po-item',
-                params: argu
-            });
-        },
+        }
     },
     computed: {
         categoryList () {

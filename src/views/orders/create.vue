@@ -150,7 +150,7 @@
                                 <Card>
                                     <Row>
                                         <Col span="4" offset="11">
-                                            <Button type="ghost" @click="createOrderReset">重置</Button>                                            
+                                            <Button type="primary" @click="addItem">添加产品</Button>                                            
                                             <Button type="primary" @click="createOrder">创建订单</Button>
                                         </Col>
                                     </Row>
