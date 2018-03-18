@@ -216,7 +216,7 @@ export const appRouter = [
         ]
     },
     {
-        path: '/warehouse',
+        path: '/stock',
         icon: 'ios-grid-view',
         name: 'warehouse',
         title: '仓储管理',
