@@ -5,24 +5,39 @@
 <template>
     <div class="list">
         <Row class="margin-top-10">
-            <Col span="24">
-            <Card>
-                <p slot="title">
-                    <Icon type="ios-keypad"></Icon>
-                    客户管理
-                    <Button class="add-button" type="primary" @click="addMember">添加客户</Button>
-                </p>
-                <Row>
-                    <Col span="24">
-                    <can-edit-table :size="'small'" v-model="editInlineAndCellData" @on-cell-change="handleCellChange" @on-change="handleChange" @on-delete="handleDel" @click-customButton="clickCustomButton" :columns-list="editInlineAndCellColumn" :customeButtonName="'更新地址'"></can-edit-table>
-                    </Col>
-                </Row>
-            </Card>
+            <Col span="6">
+                <member-category :type="type"></member-category>
+            </Col>
+            <Col span="18">
+                <Card>
+                    <p slot="title">
+                        <Icon type="ios-keypad"></Icon>
+                        客户管理
+                        <Button class="add-button" type="primary" @click="addMember">添加客户</Button>
+                    </p>
+                    <Row>
+                        <Col span="24">
+                        <can-edit-table 
+                        :size="'small'" 
+                        v-model="editInlineAndCellData" 
+                        @on-change="handleChange" 
+                        @on-delete="handleDel" 
+                        @click-customButton="clickCustomButton" 
+                        :columns-list="editInlineAndCellColumn" 
+                        :customeButtonName="'编辑'"></can-edit-table>
+                        </Col>
+                    </Row>
+                </Card>
             </Col>
         </Row>
         <Modal v-model="addClientModal" :closable='true' :mask-closable=false :width="600">
             <h3 slot="header" style="color:#2D8CF0">添加客户</h3>
             <Form ref="addClientForm" :model="addClientForm" :label-width="100" label-position="right" :rules='clientValid'>
+                <FormItem label="分类">
+                    <Select v-model="addClientForm.category">
+                        <Option v-for="cate in categoryList" :value="`${cate.id}`" :key="cate.id">{{ cate.name }}</Option>
+                    </Select>
+                </FormItem> 
                 <FormItem label="单位名称" prop="name">
                     <Input v-model="addClientForm.name" placeholder="请输入单位名称"></Input>
                 </FormItem>
@@ -53,15 +68,32 @@
             </div>
         </Modal>
         <Modal v-model="areaModal" :closable='true' :mask-closable=false :width="600">
-            <h3 slot="header" style="color:#2D8CF0">更新地址</h3>
-            <Form ref="addClientForm" :model="addClientForm" :label-width="100" label-position="right">
+            <h3 slot="header" style="color:#2D8CF0">编辑</h3>
+            <Form ref="addClientForm" :model="editClientForm" :label-width="100" label-position="right">
+                <FormItem label="分类" prop="category">
+                    <Select v-model="editClientForm.category">
+                        <Option v-for="cate in categoryList" :value="`${cate.id}`" :key="cate.id">{{ cate.name }}</Option>
+                    </Select>
+                </FormItem>          
+                <FormItem label="单位名称" prop="name">
+                    <Input v-model="editClientForm.name" placeholder="请输入单位名称"></Input>
+                </FormItem>
+                <FormItem label="单位编号" prop="code">
+                    <Input v-model="editClientForm.code" placeholder="请输入单位编号"></Input>
+                </FormItem>
+                <FormItem label="联系人" prop="contacts_name">
+                    <Input v-model="editClientForm.contacts_name" placeholder="请输入联系人"></Input>
+                </FormItem>
+                <FormItem label="电话" prop="mobilephone">
+                    <Input v-model="editClientForm.mobilephone" placeholder="请输入联系电话"></Input>
+                </FormItem>
                 <FormItem label="地址" prop="address">
                     <Col>
                     <Card v-if="areaModal">
                         <al-selector ref="city" v-model="area" data-type="name" level="2" />
                     </Card>
                     </Col>
-                    <Input v-model="addClientForm.address" placeholder="请输入详细地址"></Input>
+                    <Input v-model="editClientForm.address" placeholder="请输入详细地址"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -77,66 +109,74 @@ import Vue from 'vue';
 import iviewArea from 'iview-area';
 Vue.use(iviewArea);
 import canEditTable from './../common/components/canEditTable.vue';
+import memberCategory from './member-category.vue';
 export default {
     name: 'editable-table',
     components: {
-        canEditTable
+        canEditTable,
+        memberCategory
     },
     data () {
         return {
             endPoint: this.$store.state.app.endPoint,
             type: 1,
-            editInlineAndCellColumn: [{
-                title: '序号',
-                type: 'index',
-                width: 50,
-                align: 'center'
-            },
-            {
-                title: '单位名称',
-                align: 'center',
-                key: 'name',
-                editable: true
-            },
-            {
-                title: '单位编号',
-                align: 'center',
-                key: 'code',
-                width: 100,
-                editable: true
-            },
-            {
-                title: '联系人',
-                align: 'center',
-                key: 'contacts_name',
-                width: 100,
-                editable: true
-            },
-            {
-                title: '电话',
-                align: 'center',
-                key: 'mobilephone',
-                width: 120,
-                editable: true
-            },
-            {
-                title: '地址',
-                align: 'center',
-                key: 'addressFull'
-            },
-            {
-                title: '备注',
-                align: 'center',
-                key: 'remark',
-                editable: true
-            },
-            {
-                title: '操作',
-                align: 'center',
-                key: 'handle',
-                width: 180,
-                handle: ['edit', 'delete', 'custom']
-            }
+            editInlineAndCellColumn: [
+                {
+                    title: '序号',
+                    type: 'index',
+                    width: 50,
+                    align: 'center'
+                },
+                {
+                    title: '分类',
+                    align: 'center',
+                    key: 'category_name',
+                },
+                {
+                    title: '单位名称',
+                    align: 'center',
+                    key: 'name',
+                    editable: true
+                },
+                {
+                    title: '单位编号',
+                    align: 'center',
+                    key: 'code',
+                    width: 100,
+                    editable: true
+                },
+                {
+                    title: '联系人',
+                    align: 'center',
+                    key: 'contacts_name',
+                    width: 100,
+                    editable: true
+                },
+                {
+                    title: '电话',
+                    align: 'center',
+                    key: 'mobilephone',
+                    width: 120,
+                    editable: true
+                },
+                {
+                    title: '地址',
+                    align: 'center',
+                    key: 'addressFull'
+                },
+                {
+                    title: '备注',
+                    align: 'center',
+                    key: 'remark',
+                    editable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    key: 'handle',
+                    width: 180,
+                    handle: ['', 'delete', 'custom']
+                }
             ],
             editInlineAndCellData: [],
             addClientModal: false,
@@ -151,6 +191,7 @@ export default {
                 address: '',
                 remark: ''
             },
+            editClientForm: {},
             saveLoading: false,
             clientValid: {
                 name: {
@@ -172,13 +213,13 @@ export default {
                     required: true,
                     message: '请输入联系电话',
                     trigger: 'submit'
-                }
-
+                },
             },
             areaModal: false,
             area: [],
             updateArea: [],
-            client: {}
+            client: {},
+            categoryList: [],            
         };
     },
     methods: {
@@ -206,18 +247,20 @@ export default {
             const client = val[index];
             this.client = client;
             this.area = [client.province, client.city, client.district];
-            this.addClientForm.address = client.address;
+            this.editClientForm = client;
             this.areaModal = true;
         },
         cancelUpdateArea () {
             this.areaModal = false;
         },
         saveArea () {
-            this.client.province = this.area[0];
-            this.client.city = this.area[1];
-            this.client.district = this.area[2];
-            this.client.address = this.addClientForm.address;
-            this.ajaxUpdate(this.client, '地址更新');
+            this.editClientForm.province = this.area[0];
+            this.editClientForm.city = this.area[1];
+            this.editClientForm.district = this.area[2];
+            const selectedCategory = this.getSelectedCategory(this.editClientForm.category);
+            this.editClientForm.category_name = selectedCategory.name;
+            console.log(this.editClientForm);
+            this.ajaxUpdate(this.editClientForm, '更新');
             this.areaModal = false;
             this.area = [];
         },
@@ -226,12 +269,10 @@ export default {
             data.status = 0;
             this.ajaxUpdate(data, '删除');
         },
-        handleCellChange (val, index, key) {
-            const data = val[index];
-            this.ajaxUpdate(data);
-        },
         handleChange (val, index) {
             const data = val[index];
+            const selectedCategory = this.getSelectedCategory(data.category);
+            data.category_name = selectedCategory.name;
             this.ajaxUpdate(data);
         },
         ajaxUpdate (data, msg = '更新') {
@@ -239,6 +280,7 @@ export default {
             const options = {
                 credentials: false
             };
+            console.log(data);
             this.$http.post(api, data, options).then(res => {
                 if (res.body.id) {
                     this.$Message.success(`${msg}成功`);
@@ -258,17 +300,17 @@ export default {
         saveCleint () {
             this.$refs['addClientForm'].validate((valid) => {
                 if (valid) {
-                    console.log(this.area);
                     this.saveLoading = true;
                     const api = `${this.endPoint}member`;
                     const options = {
                         credentials: false
                     };
-
                     this.addClientForm.province = this.area[0];
                     this.addClientForm.city = this.area[1];
                     this.addClientForm.district = this.area[2];
                     const data = this.addClientForm;
+                    const selectedCategory = this.getSelectedCategory(data.category);
+                    data.category_name = selectedCategory.name;
                     this.$http.post(api, data, options).then(res => {
                         this.saveLoading = false;
                         if (res.body.status) {
@@ -282,10 +324,28 @@ export default {
                     });
                 }
             });
-        }
+        },
+        getCategoryList () {
+            const api = `${this.endPoint}member-categorys`;
+            const options = {
+                credentials: false
+            };
+            this.$http.get(api, {params: { type: this.type }}, options).then(res => {
+                if (res.body.data) {
+                    this.categoryList = res.body.data;
+                }
+            });
+        },
+        getSelectedCategory (category) {
+            const list = this.categoryList.filter(cate => {
+                return cate.id == category;
+            });
+            return list[0];
+        },
     },
     created () {
         this.getData();
+        this.getCategoryList();
     }
 };
 </script>

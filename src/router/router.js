@@ -88,6 +88,12 @@ export const otherRouter = {
             component: resolve => { require(['@/views/system/account-category.vue'], resolve); } 
         },
         { 
+            path: 'client-category', 
+            title: '客户分类管理', 
+            name: 'client-category', 
+            component: resolve => { require(['@/views/system/member-category.vue'], resolve); } 
+        },
+        { 
             path: 'order/:order_id', 
             title: '订单详情', 
             name: 'order-info', 

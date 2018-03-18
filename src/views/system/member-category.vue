@@ -10,8 +10,8 @@
                 <Card>
                     <p slot="title">
                         <Icon type="ios-keypad"></Icon>
-                        分类管理
-                        <Button class="add-button" type="primary" @click="addCategory">添加分类</Button>                       
+                        客户分类管理
+                        <Button class="add-button" type="primary" @click="addCategory">添加客户分类</Button>                        
                     </p>
                     <Row>
                         <Col span="24">
@@ -29,7 +29,7 @@
             </Col>
         </Row>
         <Modal v-model="addCategoryModal" :closable='true' :mask-closable=false :width="500">
-            <h3 slot="header" style="color:#2D8CF0">添加分类</h3>
+            <h3 slot="header" style="color:#2D8CF0">添加客户分类</h3>
             <Form ref="addCategoryForm" :model="addCategoryForm" :label-width="100" label-position="right" :rules='categoryValid'>
                 <FormItem label="分类名称" prop="name">
                     <Input v-model="addCategoryForm.name" placeholder="请输入分类名称" ></Input>
@@ -60,11 +60,6 @@ export default {
             endPoint: this.$store.state.app.endPoint,
             editInlineAndCellColumn: [
                 {
-                    title: '序号',
-                    type: 'index',
-                    align: 'center'
-                },
-                {
                     title: '分类名称',
                     align: 'center',
                     key: 'name',
@@ -91,7 +86,7 @@ export default {
     },
     methods: {
         getData () {
-            const api = `${this.endPoint}account-categorys`;
+            const api = `${this.endPoint}member-categorys`;
             const options = {
                 credentials: false
             };
@@ -115,7 +110,7 @@ export default {
             this.ajaxUpdate(data);
         },
         ajaxUpdate (data, msg = '更新') {
-            const api = `${this.endPoint}account-category`;
+            const api = `${this.endPoint}member-category`;
             const options = {
                 credentials: false
             };
@@ -138,7 +133,7 @@ export default {
                 if (valid) {
                     this.saveLoading = true;
                     const data = this.addCategoryForm;
-                    const api = `${this.endPoint}account-category`;
+                    const api = `${this.endPoint}member-category`;
                     const options = {
                         credentials: false
                     };
