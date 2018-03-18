@@ -225,12 +225,10 @@ export default {
             productValid: {
                 name: { required: true, message: '请输入商品分类名称', trigger: 'submit' }
             },
-            categoryList: [],
             colorAttributeID: 1,
             sizeAttributeID: 2,
             colorList: [],
             sizeList: [],
-            supplierList: [],
             searchForm: {
                 name: '',
                 code: '',
@@ -261,17 +259,6 @@ export default {
                 }
             });
         },
-        getCategoryList () {
-            const api = `${this.endPoint}categorys`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, options).then(res => {
-                if (res.body.data) {
-                    this.categoryList = res.body.data;
-                }
-            });
-        },
         getColorList () {
             this.getAttributeValue(this.colorAttributeID);
         },
@@ -291,21 +278,6 @@ export default {
                     if (attributeID === this.sizeAttributeID) {
                         this.sizeList = res.body.data;
                     }
-                }
-            });
-        },
-        getSupplierList () {
-            const api = `${this.endPoint}members`;
-            const options = {
-                credentials: false
-            };
-            this.$http.get(api, {
-                params: {
-                    type: 2
-                }
-            }, options).then(res => {
-                if (res.body.data) {
-                    this.supplierList = res.body.data;
                 }
             });
         },
@@ -383,12 +355,22 @@ export default {
             this.getData(params);
         }
     },
+    computed: {
+        categoryList () {
+            return this.$store.state.data.categorys; 
+        },
+        supplierList () {
+            return this.$store.state.data.suppliers;
+        },
+    },
     created () {
         this.getData();
-        this.getCategoryList();
+        this.$store.dispatch('getCategorys');
         this.getColorList();
         this.getSizeList();
-        this.getSupplierList();
+        if (this.$store.state.data.suppliers.length === 0) {
+            this.$store.dispatch('getMembers', { type: [ 2 ] });
+        }
     }
 };
 </script>

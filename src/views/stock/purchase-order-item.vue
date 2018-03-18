@@ -10,15 +10,12 @@
                     <p slot="title">
                         <Icon type="ios-keypad"></Icon>
                         进货单详情
+                        <Button class="add-button" type="primary" @click="goToList">进货入库单列表</Button>                        
                     </p>
                     <Row>
                         <Col span="24">
                             <can-edit-table
                                 v-model="editInlineAndCellData" 
-                                @on-cell-change="handleCellChange" 
-                                @on-change="handleChange"  
-                                @on-delete="handleDel"
-                                :editIncell="true" 
                                 :columns-list="editInlineAndCellColumn"
                             ></can-edit-table>
                         </Col>
@@ -164,19 +161,6 @@ export default {
                 this.total = res.body.data.count;
             });
         },
-        handleDel (val, index) {
-            const data = val[index];
-            data.status = 0;
-            this.ajaxUpdate(data, '删除');
-        },
-        handleCellChange (val, index, key) {
-            const data = val[index];
-            this.ajaxUpdate(data);
-        },
-        handleChange (val, index) {
-            const data = val[index];
-            this.ajaxUpdate(data);
-        },
         ajaxUpdate (data, msg = '更新') {
             const api = `${this.endPoint}purchase-order`;
             const options = {
@@ -195,9 +179,12 @@ export default {
             this.page = val;
             const params = this.searchForm;
             this.getData(params);
+        },
+        goToList () {
+            this.$router.push({
+                name: 'purchase-order',
+            });
         }
-    },
-    computed: {
     },
     created () {
         this.getData();     

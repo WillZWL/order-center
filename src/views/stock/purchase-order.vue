@@ -474,7 +474,9 @@ export default {
     created () {
         this.getData();
         this.$store.dispatch('getCategorys');
-        this.$store.dispatch('getMembers', { type: [ 2 ] });
+        if (this.$store.state.data.suppliers.length === 0) {
+            this.$store.dispatch('getMembers', { type: [ 2 ] });
+        }
         this.$store.dispatch('getUsers');        
     }
 };
