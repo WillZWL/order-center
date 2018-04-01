@@ -41,24 +41,24 @@
                         <Row>
                             <Col span="24">
                                 <Card>
-                                    <Form ref="baseForm" :model="addPoBaseForm" :label-width="80" label-position="right">
+                                    <Form ref="addPoBaseForm" :model="addPoBaseForm" :label-width="80" label-position="right" :rules='poBaseValid'>
                                         <Row>
                                             <Col span="8">
-                                                <FormItem label="供货商">
+                                                <FormItem label="供货商" prop="supplier_id">
                                                     <Select v-model="addPoBaseForm.supplier_id">
-                                                        <Option v-for="supplier in supplierList" :value="supplier.id" :key="supplier.id+supplier.name">{{ supplier.name }}</Option>
+                                                        <Option v-for="supplier in supplierList" :value="`${supplier.id}`" :key="supplier.id+supplier.name">{{ supplier.name }}</Option>
                                                     </Select>
                                                 </FormItem>
                                             </Col>
                                             <Col span="8">
-                                                <FormItem label="经手人">
+                                                <FormItem label="经手人" prop="user_id">
                                                     <Select v-model="addPoBaseForm.user_id">
-                                                        <Option v-for="user in userList" :value="user.id" :key="user.id+user.name">{{ user.name }}</Option>
+                                                        <Option v-for="user in userList" :value="`${user.id}`" :key="user.id+user.name">{{ user.name }}</Option>
                                                     </Select>
                                                 </FormItem>
                                             </Col>
                                             <Col span="8">
-                                                <FormItem label="创建日期">
+                                                <FormItem label="创建日期" prop="create_date">
                                                     <DatePicker format="yyyy-MM-dd" type="date" v-model="addPoBaseForm.create_date" placeholder="创建日期" style="width:100%"></DatePicker>
                                                 </FormItem>
                                             </Col>
@@ -143,10 +143,10 @@
                         </Row>
                     </p>
                 </Panel>
-            </Collapse>
-            
+            </Collapse>        
             <div slot="footer">
                 <Button type="text" @click="cancelAddPo">取消</Button>
+                <Button type="primary" @click="addBase">添加产品</Button>
                 <Button type="primary" :loading="saveLoading" @click="savePo">保存</Button>
             </div>
         </Modal>
@@ -166,6 +166,7 @@ export default {
     props: [ 'type' ],
     data () {
         return {
+            userId: this.$store.state.user.userId,
             panelValue: 'basePanel',
             endPoint: this.$store.state.app.endPoint,
             editInlineAndCellColumn: [
@@ -223,9 +224,19 @@ export default {
             addPoModal: false,
             addPoBaseForm: {
                 create_date: moment().format('YYYY-MM-DD'),
+                supplier_id: '',
+                user_id: '',
+            },
+            poBaseValid: {
+                supplier_id: [
+                    { required: true, message: '请选择供应商', trigger: 'change' },
+                ],
+                user_id: [
+                    { required: true, message: '请选择经手人', trigger: 'change' },                    
+                ],
             },
             addPoForm: {
-                name: ''
+                name: '',
             },
             searchProductForm: {
                 cate_id: '',
@@ -445,7 +456,11 @@ export default {
             this.panelValue = 'stockPanel';
         },
         addBase () {
-            this.panelValue = 'searchPanel';
+            this.$refs['addPoBaseForm'].validate((valid) => {
+                if (valid) {
+                    this.panelValue = 'searchPanel';
+                }
+            });
         },
         changePage (val) {
             this.page = val;
@@ -485,7 +500,8 @@ export default {
         if (this.$store.state.data.suppliers.length === 0) {
             this.$store.dispatch('getMembers', { type: [ 2 ] });
         }
-        this.$store.dispatch('getUsers');        
+        this.$store.dispatch('getUsers');
+        this.addPoBaseForm.user_id = this.userId;   
     }
 };
 </script>

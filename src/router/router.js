@@ -242,13 +242,13 @@ export const appRouter = [
                 title: '进货退货单',
                 component: resolve => { require(['@/views/stock/purchase-return-order.vue'], resolve); }
             },
-            {
-                path: 'purchase-swap-order',
-                icon: 'document',
-                name: 'purchase-swap-order',
-                title: '进货换货单',
-                component: resolve => { require(['@/views/stock/purchase-swap-order.vue'], resolve); }
-            },
+            // {
+            //     path: 'purchase-swap-order',
+            //     icon: 'document',
+            //     name: 'purchase-swap-order',
+            //     title: '进货换货单',
+            //     component: resolve => { require(['@/views/stock/purchase-swap-order.vue'], resolve); }
+            // },
         ]
     },
     {

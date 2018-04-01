@@ -27,7 +27,7 @@
                 </Col>
                 <Col span="12">
                     <FormItem label="单位名称" prop="client_name">
-                        <Input v-model="orderReceiptForm.client_name" placeholder="请输入购买单位" ></Input>
+                        <Input v-model="orderReceiptForm.client_name" placeholder="请输入单位名称" ></Input>
                     </FormItem>                        
                 </Col>
             </Row>
@@ -91,6 +91,10 @@
             orderId: {
                 type: Number,
                 default: 0,
+            },
+            addOrderForm: {
+                type: Object,
+                default: {},
             }
         },
         data () {
@@ -130,8 +134,13 @@
                 return this.$store.state.data.users;
             },
             orderReceiptForm () {
+                this.$store.state.order.orderReceipt.client_id = this.addOrderForm.client_id;
+                if (this.addOrderForm.client_id) {
+                    const clientName = this.getClientName(this.$store.state.data.clients, this.addOrderForm.client_id);
+                    this.$store.state.order.orderReceipt.client_name = clientName.name;
+                }
                 return this.$store.state.order.orderReceipt;
-            }
+            },
         },
         methods: {
             showReceiptModal() {
@@ -177,10 +186,19 @@
                     }
                 }
                 return formData;
+            },
+            getClientName(clients, client_id) {
+                const list = this.clients.filter(client => {
+                    return client.id == client_id;
+                });
+                return list[0];
             }
         },
         created () {
-            this.$store.dispatch('getUsers');   
+            this.$store.dispatch('getUsers');
+            this.orderReceiptForm.create_date = this.addOrderForm.order_date;
+            this.orderReceiptForm.user_id = this.addOrderForm.user_id;
+            this.orderReceiptForm.client_id = this.addOrderForm.client_id;
         }
     }
 </script>

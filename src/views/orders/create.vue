@@ -4,6 +4,20 @@
     .area .ivu-row .ivu-col {
         width: 30%;
     }
+    .list ul {
+        display: block;
+        float: right;
+    }
+    .list ul li {
+        width: 80px;
+        float: left;
+        text-align: center;
+        line-height: 30px;
+    }
+    .list ul li input{
+        display: block;
+        float: right;
+    }
 </style>
 <template>
     <div>
@@ -122,13 +136,10 @@
                                                 </Row>
                                             </Card>
                                         </Col>
-                                        <Col span="4" offset="11" class="margin-bottom-10">
-                                            <Button class="add-button" type="primary" @click="addItem">添加产品</Button>
-                                        </Col>                                        
                                     </p>
                                 </Panel>
                                 <Panel name="itemPanel">
-                                    产品&nbsp;&nbsp; 总数量 {{ itemTotal }},  &nbsp;&nbsp; 总金额 {{ itemAmount }}
+                                    产品&nbsp;&nbsp;
                                     <p slot="content">
                                         <Col span="24" class="list">
                                             <Row>
@@ -140,6 +151,15 @@
                                                         :editIncell="true" 
                                                         :columns-list="orderItemColumn"
                                                     ></can-edit-table>
+                                                </Col>
+                                                <Col>
+                                                    <div class="margin-top-10">合计
+                                                        <ul>
+                                                            <li>总数量: {{ itemTotal }}</li>
+                                                            <li>总金额: </li>
+                                                            <li><Input v-model="addOrderForm.item_amount" placeholder="总金额" style="float:right;"></Input></li>                                
+                                                        </ul>
+                                                    </div>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -196,7 +216,7 @@
                 <Button type="primary" @click="finishAddItem">确定</Button>
             </div>
         </Modal>
-        <receipt ref="addReceipt" :invoiceType="invoiceType"></receipt>        
+        <receipt ref="addReceipt" :invoiceType="invoiceType" :addOrderForm="addOrderForm"></receipt>        
     </div>
 </template>
 
@@ -251,14 +271,16 @@ export default {
                 province: '',
                 city: '',
                 district: '',
-                address: '',     
+                address: '',
+                item_amount: 0,
+                area: [],
             },
             orderValid: {
                 channel_id: [
                     { required: true, message: '请选择渠道', trigger: 'change' },
                 ],
                 user_id: [
-                    { required: true, message: '请选择接单人', trigger: 'submit' },
+                    { required: true, message: '请选择接单人', trigger: 'change' },
                 ],
                 client_id: [
                     { required: true, message: '请选择购买单位', trigger: 'change' },
@@ -341,21 +363,9 @@ export default {
                     editable: true
                 },
                 {
-                    title: '单价',
-                    key: 'price',
-                    align: 'center',
-                    editable: true,                    
-                },
-                {
                     title: '数量',
                     key: 'total',
                     align: 'center',
-                },
-                {
-                    title: '合计',
-                    key: 'amount',
-                    align: 'center',
-                    editable: true,                  
                 },
                 {
                     title: '操作',
@@ -494,12 +504,12 @@ export default {
                         };
                         const orderData = this.addOrderForm;
                         orderData.item_total = this.itemTotal;
-                        orderData.item_amount = this.itemAmount;
 
-                        orderData.province = this.addOrderForm.area[0];
-                        orderData.city = this.addOrderForm.area[1];
-                        orderData.district = this.addOrderForm.area[2];
-    
+                        if (this.addOrderForm.area.length > 0) {
+                            orderData.province = this.addOrderForm.area[0];
+                            orderData.city = this.addOrderForm.area[1];
+                            orderData.district = this.addOrderForm.area[2];
+                        }
                         const orderReceiptData = this.orderReceiptForm;
                         orderReceiptData.type = this.invoiceType;
                         const data = {
@@ -512,7 +522,7 @@ export default {
                                 const order = res.body.order;
                                 this.$Message.success(`${order.order_sn} 创建成功`);
                                 this.$refs['addOrderForm'].resetFields();
-                                this.$refs['addOrderReceipt'].resetFields();
+                                // this.$refs['addOrderReceipt'].resetFields();
                                 this.orderItemData = [];
                             } else {
                                 this.$Message.error('创建失败');
@@ -563,13 +573,6 @@ export default {
                 total += item.total;
             });
             return total;
-        },
-        itemAmount: function() {
-            let amount = 0;
-            this.orderItemData.forEach(item => {
-                amount += parseInt(item.amount);
-            });
-            return amount;
         },
         channels() {
             return this.$store.state.data.channels;

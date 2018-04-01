@@ -122,10 +122,10 @@ export default {
             type: 1,
             editInlineAndCellColumn: [
                 {
-                    title: '序号',
-                    type: 'index',
-                    width: 50,
-                    align: 'center'
+                    title: '系统编号',
+                    width: 100,
+                    align: 'center',
+                    key: 'sys_code',
                 },
                 {
                     title: '分类',
